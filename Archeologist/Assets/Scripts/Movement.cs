@@ -15,6 +15,7 @@ public class Movement : MonoBehaviour
     [SerializeField] GameObject stairObject;
     [SerializeField] float stairSeperatorDistance;
     [SerializeField] float stairSeperatorHeight;
+    [SerializeField] bool freezeMovement;
 
     Rigidbody rigidBody;
     List<GameObject> pastStairs = new List<GameObject>();
@@ -58,7 +59,7 @@ public class Movement : MonoBehaviour
     private Vector2 CreateNewStair(float deltaX,float deltaY)
     {
         float newX = currentStairPositionX + deltaX;
-        float newY = currentStairPositionY + deltaY;
+        float newY = currentStairPositionY - deltaY;
 
         currentStairPositionX = newX;
         currentStairPositionY = newY;
@@ -74,7 +75,7 @@ public class Movement : MonoBehaviour
 
         Vector3 newPosition = new Vector3(newX, newY, transform.position.z);
         pastStairs.Add(Instantiate(stairObject, newPosition, Quaternion.identity));
-        newPosition = new Vector3(newX+deltaX, newY+deltaY, transform.position.z);
+        newPosition = new Vector3(newX+deltaX, newY-deltaY, transform.position.z);
         pastStairs.Add(Instantiate(stairObject, newPosition, Quaternion.identity));
 
         return new Vector2(newX, newY);
@@ -109,7 +110,8 @@ public class Movement : MonoBehaviour
     }
     private void ProcessInput()
     {
-        float horizontalValue = movement.ReadValue<float>();
+        float horizontalValue = horizontalValue = movement.ReadValue<float>();
+        if (freezeMovement) horizontalValue = 1f;
         float verticalValue = (jump.ReadValue<float>() > 0.5) ? jumpForce : 0;
 
         float xDelta = horizontalValue / Mathf.Abs(horizontalValue)*Time.deltaTime*movementSpeed;
