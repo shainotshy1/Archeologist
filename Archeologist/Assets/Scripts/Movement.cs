@@ -104,7 +104,7 @@ public class Movement : MonoBehaviour
 
         for (int i = 0; i < pastStairs.Count; i++)
         {
-            if (Mathf.Abs(pastStairs[i].transform.position.x - currentStairPositionX) > stairSeperatorDistance*stairsInfrontAmount)
+            if (Mathf.Abs(pastStairs[i].transform.position.x - currentStairPositionX) > stairSeperatorDistance*stairsInfrontAmount|| pastStairs[i].transform.position.x - currentStairPositionX < -stairSeperatorDistance * 10)
             {
                 RemoveStair(i,true);
                 i--;
