@@ -7,7 +7,7 @@ public class PlatformHandler : MonoBehaviour
     [SerializeField] float rotation;
     void Start()
     {
-        transform.Rotate(0, 0, rotation);
+        transform.Rotate(0, 90, rotation);
     }
 
 }

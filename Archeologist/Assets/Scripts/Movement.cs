@@ -18,8 +18,9 @@ public class Movement : MonoBehaviour
     [SerializeField] List<GameObject> obstacles;
 
     List<GameObject> pastStairs = new List<GameObject>();
-    float currentStairPositionX = 0f;
-    float currentStairPositionY = 0f;
+    System.Random random = new System.Random();
+    Vector3 currentStairPosition = new Vector3(0, 0, 0);
+    Vector3 movementDirection = new Vector3(0f, 0f, 1f);
 
     private void OnEnable()
     {
@@ -33,11 +34,11 @@ public class Movement : MonoBehaviour
     {
         for(int i = 0; i < stairsInfrontAmount; i++)
         {
-            Vector3 pos = new Vector3(-stairSeperatorDistance*i, -stairSeperatorHeight*i, 0);
+            Vector3 pos = new Vector3(movementDirection.x*-stairSeperatorDistance*i, -stairSeperatorHeight*i, movementDirection.z * -stairSeperatorDistance * i);
             pastStairs.Add(Instantiate(stairObject, pos, Quaternion.identity));
             if (i > 0)
             {
-                pos = new Vector3(stairSeperatorDistance * i, stairSeperatorHeight * i, 0);
+                pos = new Vector3(movementDirection.x * stairSeperatorDistance * i, stairSeperatorHeight * i, movementDirection.z * stairSeperatorDistance * i);
                 pastStairs.Add(Instantiate(stairObject, pos, Quaternion.identity));
             }
         }
@@ -45,29 +46,31 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        ProcessInput();
-        CreateNewStairs();
+        MovementHandler();
+        StairHandler();
         if (transform.position.y <= -50)
         {
             int sceneIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(sceneIndex);
         }
     }
-
-    private Vector2 CreateNewStair(float deltaX,float deltaY)
+    private void CreateNewStairSet(float deltaZ,float deltaY,float deltaX)
     {
-        float newX = currentStairPositionX + deltaX;
-        float newY = currentStairPositionY + deltaY;
+        float newX = currentStairPosition.x + deltaX*movementDirection.x;
+        float newY = currentStairPosition.y + deltaY;
+        float newZ = currentStairPosition.z + deltaZ*movementDirection.z;
 
-        currentStairPositionX = newX;
-        currentStairPositionY = newY;
+        currentStairPosition.x = newX;
+        currentStairPosition.y = newY;
+        currentStairPosition.z = newZ;
 
         for (int i = 0; i < stairsInfrontAmount; i++)
         {
+            Vector3 newPosition = new Vector3(newX + deltaX * i * movementDirection.x, newY + deltaY * i, newZ + deltaZ * i + movementDirection.z);
             bool exists = false;
             for(int k = 0; k < pastStairs.Count; k++)
             {
-                if(pastStairs[k].transform.position.x == newX + deltaX * i)
+                if(pastStairs[k].transform.position == newPosition)
                 {
                     exists = true;
                     break;
@@ -75,36 +78,34 @@ public class Movement : MonoBehaviour
             }
             if (!exists)
             {
-                Vector3 newPosition = new Vector3(newX + deltaX * i, newY + deltaY * i, 0);
                 Quaternion rotation = Quaternion.identity;
                 pastStairs.Add(Instantiate(stairObject, newPosition, rotation));
 
-                System.Random random = new System.Random();
-                if (random.Next(0, 10) > 6&&obstacles.Count>0)
+                if (random.Next(0, 100) >80&&obstacles.Count>0)
                 {
-                    Vector3 obstaclePosition = new Vector3(newPosition.x, newPosition.y+1f, ((int)(random.NextDouble()*3)-1)*obstaclePlacementRange);
+                    float obstaclePlacementAxis = ((int)(random.NextDouble() * 3) - 1) * obstaclePlacementRange;
+                    Vector3 obstaclePosition = new Vector3(obstaclePlacementAxis*movementDirection.z+newPosition.x, newPosition.y+1f, obstaclePlacementAxis * movementDirection.x+newPosition.z);
                     int index = random.Next(0, obstacles.Count - 1);
                     Instantiate(obstacles[index], obstaclePosition, Quaternion.identity);
                 }
             }
         }
-        
-        return new Vector2(newX, newY);
     }
-    private void CreateNewStairs()
+    private void StairHandler()
     {
-        if (transform.position.x > currentStairPositionX + stairSeperatorDistance/2)
+        if (transform.position.x + transform.position.z > currentStairPosition.x + currentStairPosition.z + stairSeperatorDistance/2)
         {
-            CreateNewStair(stairSeperatorDistance, stairSeperatorHeight);
+            CreateNewStairSet(stairSeperatorDistance, stairSeperatorHeight,stairSeperatorDistance);
         }
-        else if(transform.position.x < currentStairPositionX - stairSeperatorDistance/2)
+        else if(transform.position.x + transform.position.z < currentStairPosition.x + currentStairPosition.z - stairSeperatorDistance/2)
         {
-            CreateNewStair(-stairSeperatorDistance, -stairSeperatorHeight);
+            CreateNewStairSet(-stairSeperatorDistance, -stairSeperatorHeight,-stairSeperatorDistance);
         }
 
         for (int i = 0; i < pastStairs.Count; i++)
         {
-            if (Mathf.Abs(pastStairs[i].transform.position.x - currentStairPositionX) > stairSeperatorDistance*stairsInfrontAmount|| pastStairs[i].transform.position.x - currentStairPositionX < -stairSeperatorDistance * 10)
+            Vector3 difference = new Vector3(pastStairs[i].transform.position.x - currentStairPosition.x,0, pastStairs[i].transform.position.z - currentStairPosition.z);
+            if (difference.x*movementDirection.x+difference.z*movementDirection.z < -stairSeperatorDistance * 3*(movementDirection.x+movementDirection.z))
             {
                 RemoveStair(i,true);
                 i--;
@@ -117,14 +118,12 @@ public class Movement : MonoBehaviour
         stairDrop.Drop(useAnimation);
         pastStairs.RemoveAt(index);
     }
-    private void ProcessInput()
+    private void MovementHandler()
     {
-
-        float xDelta = Time.deltaTime * movementSpeed;
-        if (Mathf.Abs(xDelta) > Mathf.Epsilon)
+        float movementForward = Time.deltaTime * movementSpeed;
+        if (Mathf.Abs(movementForward) > Mathf.Epsilon)
         {
-            transform.Translate(xDelta, 0, 0);
+            transform.Translate(movementForward*Vector3.forward);
         }
-
     }
 }

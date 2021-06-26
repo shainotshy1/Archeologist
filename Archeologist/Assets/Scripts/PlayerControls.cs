@@ -56,9 +56,9 @@ public class PlayerControls : MonoBehaviour
         {
             if (setPosition == Position.Middle)
             {
-                setPosition = Position.Right;
+                setPosition = Position.Left;
             }
-            if (setPosition == Position.Left)
+            else if (setPosition == Position.Right)
             {
                 setPosition = Position.Middle;
             }
@@ -67,9 +67,9 @@ public class PlayerControls : MonoBehaviour
         {
             if (setPosition == Position.Middle)
             {
-                setPosition = Position.Left;
+                setPosition = Position.Right;
             }
-            else if (setPosition == Position.Right)
+            if (setPosition == Position.Left)
             {
                 setPosition = Position.Middle;
             }
@@ -81,17 +81,17 @@ public class PlayerControls : MonoBehaviour
     {
         if (position == Position.Middle)
         {
-            Vector3 endPosition = new Vector3(transform.position.x, transform.position.y, 0);
+            Vector3 endPosition = new Vector3(0, transform.position.y, transform.position.z);
             transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
         }
-        else if(position == Position.Left)
+        if(position == Position.Left)
         {
-            Vector3 endPosition = new Vector3(transform.position.x, transform.position.y, -movementDistance);
+            Vector3 endPosition = new Vector3(-movementDistance, transform.position.y, transform.position.z);
             transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
         }
         else if(position == Position.Right)
         {
-            Vector3 endPosition = new Vector3(transform.position.x, transform.position.y, movementDistance);
+            Vector3 endPosition = new Vector3(movementDistance, transform.position.y,transform.position.z);
             transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
         }
     }
