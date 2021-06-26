@@ -12,9 +12,11 @@ public class DropStair : MonoBehaviour
             gameObject.GetComponent<Rigidbody>().useGravity = true;
         }
         else
-        {*/
+        {
             Destroy(gameObject);
-        //}
+        }*/
+
+        Destroy(gameObject);
     }
     private void Update()
     {

@@ -78,6 +78,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 8
+  obstaclePlacementRange: 3.8
   movement:
     m_Name: Movement
     m_Type: 0
@@ -162,6 +163,8 @@ MonoBehaviour:
   stairSeperatorDistance: 2
   stairSeperatorHeight: 0.25
   stairsInfrontAmount: 20
+  obstacles:
+  - {fileID: 5623283906151668170, guid: 13f36315117d71b44a78a7805db1982b, type: 3}
 --- !u!114 &9036799299309341623
 MonoBehaviour:
   m_ObjectHideFlags: 0

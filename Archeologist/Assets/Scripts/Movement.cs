@@ -9,11 +9,13 @@ using UnityEngine.SceneManagement;
 public class Movement : MonoBehaviour
 {
     [SerializeField] float movementSpeed;
+    [SerializeField] float obstaclePlacementRange;
     [SerializeField] InputAction movement;
     [SerializeField] GameObject stairObject;
     [SerializeField] float stairSeperatorDistance;
     [SerializeField] float stairSeperatorHeight;
     [SerializeField] int stairsInfrontAmount;
+    [SerializeField] List<GameObject> obstacles;
 
     List<GameObject> pastStairs = new List<GameObject>();
     float currentStairPositionX = 0f;
@@ -74,7 +76,16 @@ public class Movement : MonoBehaviour
             if (!exists)
             {
                 Vector3 newPosition = new Vector3(newX + deltaX * i, newY + deltaY * i, 0);
-                pastStairs.Add(Instantiate(stairObject, newPosition, Quaternion.identity));
+                Quaternion rotation = Quaternion.identity;
+                pastStairs.Add(Instantiate(stairObject, newPosition, rotation));
+
+                System.Random random = new System.Random();
+                if (random.Next(0, 10) > 6&&obstacles.Count>0)
+                {
+                    Vector3 obstaclePosition = new Vector3(newPosition.x, newPosition.y+1f, ((int)(random.NextDouble()*3)-1)*obstaclePlacementRange);
+                    int index = random.Next(0, obstacles.Count - 1);
+                    Instantiate(obstacles[index], obstaclePosition, Quaternion.identity);
+                }
             }
         }
         
