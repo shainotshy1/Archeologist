@@ -9,41 +9,36 @@ using UnityEngine.SceneManagement;
 public class Movement : MonoBehaviour
 {
     [SerializeField] float movementSpeed;
-    [SerializeField] float jumpForce;
     [SerializeField] InputAction movement;
-    [SerializeField] InputAction jump;
     [SerializeField] GameObject stairObject;
     [SerializeField] float stairSeperatorDistance;
     [SerializeField] float stairSeperatorHeight;
-    [SerializeField] bool freezeMovement;
+    [SerializeField] int stairsInfrontAmount;
 
-    Rigidbody rigidBody;
     List<GameObject> pastStairs = new List<GameObject>();
-    bool isGrounded;
     float currentStairPositionX = 0f;
     float currentStairPositionY = 0f;
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "Ground")
-        {
-            isGrounded = true;
-        }
-    }
+
     private void OnEnable()
     {
         movement.Enable();
-        jump.Enable();
     }
     private void OnDisable()
     {
-        movement.Enable();
-        jump.Enable();
+        movement.Disable();
     }
     private void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
-        Vector3 pos = new Vector3(0, 0, transform.position.z);
-        pastStairs.Add(Instantiate(stairObject, pos, Quaternion.identity));
+        for(int i = 0; i < stairsInfrontAmount; i++)
+        {
+            Vector3 pos = new Vector3(-stairSeperatorDistance*i, -stairSeperatorHeight*i, 0);
+            pastStairs.Add(Instantiate(stairObject, pos, Quaternion.identity));
+            if (i > 0)
+            {
+                pos = new Vector3(stairSeperatorDistance * i, stairSeperatorHeight * i, 0);
+                pastStairs.Add(Instantiate(stairObject, pos, Quaternion.identity));
+            }
+        }
     }
 
     private void Update()
@@ -56,28 +51,33 @@ public class Movement : MonoBehaviour
             SceneManager.LoadScene(sceneIndex);
         }
     }
+
     private Vector2 CreateNewStair(float deltaX,float deltaY)
     {
         float newX = currentStairPositionX + deltaX;
-        float newY = currentStairPositionY - deltaY;
+        float newY = currentStairPositionY + deltaY;
 
         currentStairPositionX = newX;
         currentStairPositionY = newY;
 
-        for(int i = 0; i < pastStairs.Count; i++)
+        for (int i = 0; i < stairsInfrontAmount; i++)
         {
-            if (pastStairs[i].transform.position.x == newX)
+            bool exists = false;
+            for(int k = 0; k < pastStairs.Count; k++)
             {
-                RemoveStair(i,false);
-                break;
+                if(pastStairs[k].transform.position.x == newX + deltaX * i)
+                {
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists)
+            {
+                Vector3 newPosition = new Vector3(newX + deltaX * i, newY + deltaY * i, 0);
+                pastStairs.Add(Instantiate(stairObject, newPosition, Quaternion.identity));
             }
         }
-
-        Vector3 newPosition = new Vector3(newX, newY, transform.position.z);
-        pastStairs.Add(Instantiate(stairObject, newPosition, Quaternion.identity));
-        newPosition = new Vector3(newX+deltaX, newY-deltaY, transform.position.z);
-        pastStairs.Add(Instantiate(stairObject, newPosition, Quaternion.identity));
-
+        
         return new Vector2(newX, newY);
     }
     private void CreateNewStairs()
@@ -85,17 +85,15 @@ public class Movement : MonoBehaviour
         if (transform.position.x > currentStairPositionX + stairSeperatorDistance/2)
         {
             CreateNewStair(stairSeperatorDistance, stairSeperatorHeight);
-            //CreateNewStair(stairSeperatorDistance, stairSeperatorHeight);
         }
         else if(transform.position.x < currentStairPositionX - stairSeperatorDistance/2)
         {
             CreateNewStair(-stairSeperatorDistance, -stairSeperatorHeight);
-            //CreateNewStair(-stairSeperatorDistance, -stairSeperatorHeight);
         }
 
         for (int i = 0; i < pastStairs.Count; i++)
         {
-            if (Mathf.Abs(pastStairs[i].transform.position.x - currentStairPositionX) > stairSeperatorDistance)
+            if (Mathf.Abs(pastStairs[i].transform.position.x - currentStairPositionX) > stairSeperatorDistance*stairsInfrontAmount)
             {
                 RemoveStair(i,true);
                 i--;
@@ -110,27 +108,12 @@ public class Movement : MonoBehaviour
     }
     private void ProcessInput()
     {
-        float horizontalValue = horizontalValue = movement.ReadValue<float>();
-        if (freezeMovement) horizontalValue = 1f;
-        float verticalValue = (jump.ReadValue<float>() > 0.5) ? jumpForce : 0;
 
-        float xDelta = horizontalValue / Mathf.Abs(horizontalValue)*Time.deltaTime*movementSpeed;
+        float xDelta = Time.deltaTime * movementSpeed;
         if (Mathf.Abs(xDelta) > Mathf.Epsilon)
         {
             transform.Translate(xDelta, 0, 0);
         }
 
-        if (Mathf.Abs(verticalValue) > Mathf.Epsilon&&isGrounded)
-        {
-            StartCoroutine(JumpRoutine(verticalValue));
-        }
-    }
-    IEnumerator JumpRoutine(float verticalValue)
-    {
-        rigidBody.ResetInertiaTensor();
-        rigidBody.ResetCenterOfMass();
-        rigidBody.AddRelativeForce(0, verticalValue * Time.deltaTime, 0, ForceMode.Impulse);
-        yield return new WaitForSeconds(0.1f);
-        isGrounded = false;
     }
 }

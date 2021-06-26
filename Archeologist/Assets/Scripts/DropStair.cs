@@ -6,15 +6,15 @@ public class DropStair : MonoBehaviour
 {
     public void Drop(bool useAnimation)
     {
-        if (useAnimation)
+        /*if (useAnimation)
         {
             gameObject.AddComponent<Rigidbody>();
             gameObject.GetComponent<Rigidbody>().useGravity = true;
         }
         else
-        {
+        {*/
             Destroy(gameObject);
-        }
+        //}
     }
     private void Update()
     {
