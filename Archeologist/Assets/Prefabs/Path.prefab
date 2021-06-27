@@ -907,7 +907,7 @@ GameObject:
   - component: {fileID: 398575066351810146}
   - component: {fileID: 3781027227250144641}
   m_Layer: 0
-  m_Name: Stair
+  m_Name: Path
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -969,7 +969,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20089131c6986484ab073a49d3d24626, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotation: 0
+  obstacles:
+  - {fileID: 5623283906151668170, guid: 13f36315117d71b44a78a7805db1982b, type: 3}
+  obstaclePlacementRange: 3.8
+  movementSpeed: 10
 --- !u!1001 &1196985374183065227
 PrefabInstance:
   m_ObjectHideFlags: 0

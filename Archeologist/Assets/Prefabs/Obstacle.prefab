@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5014629837408259793}
   - component: {fileID: 1347860613224883486}
   - component: {fileID: 2787138054706492344}
+  - component: {fileID: 2794195637248687082}
   m_Layer: 0
   m_Name: Obstacle
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7759917008444603137}
+  - {fileID: 1370235240513103577}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -43,11 +44,11 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 8
+  m_Constraints: 114
   m_CollisionDetection: 0
 --- !u!114 &2787138054706492344
 MonoBehaviour:
@@ -61,7 +62,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c0a15717d1518459d0670569ea8f11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &8396992067783920331
+--- !u!65 &2794195637248687082
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5623283906151668170}
+  m_Material: {fileID: 13400000, guid: e43fb629128216f47bc12e44661a3a33, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &8027213197845524043
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -69,24 +83,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7759917008444603137}
-  - component: {fileID: 8266416843200439324}
-  - component: {fileID: 4396356049189722138}
-  - component: {fileID: 1814495095202730705}
+  - component: {fileID: 1370235240513103577}
+  - component: {fileID: 6711917797798163188}
+  - component: {fileID: 3475475631255732700}
+  - component: {fileID: 5440246974769487429}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7759917008444603137
+--- !u!4 &1370235240513103577
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8396992067783920331}
+  m_GameObject: {fileID: 8027213197845524043}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -94,21 +108,21 @@ Transform:
   m_Father: {fileID: 5014629837408259793}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8266416843200439324
+--- !u!33 &6711917797798163188
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8396992067783920331}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &4396356049189722138
+  m_GameObject: {fileID: 8027213197845524043}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &3475475631255732700
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8396992067783920331}
+  m_GameObject: {fileID: 8027213197845524043}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -143,16 +157,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &1814495095202730705
-SphereCollider:
+--- !u!65 &5440246974769487429
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8396992067783920331}
+  m_GameObject: {fileID: 8027213197845524043}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
