@@ -322,7 +322,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6455046182400066759}
   - component: {fileID: 914851648712432645}
-  - component: {fileID: 786051685103896252}
   - component: {fileID: 3534429972912986473}
   m_Layer: 0
   m_Name: Player
@@ -364,20 +363,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
---- !u!136 &786051685103896252
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4293558028592454060}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 1
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3534429972912986473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,9 +457,9 @@ MonoBehaviour:
       m_Flags: 8
   newPath: {fileID: 7843164984701477885, guid: 1f5673acb4f18b844a468b965c835f9a, type: 3}
   startPath: {fileID: 7759538259351163384, guid: a545aecb60d12ab498c6513cc16080c3, type: 3}
-  pathSeperatorDistance: 6
+  pathSeperatorDistance: 18
   pathSeperatorHeight: 0
-  pathsInfrontAmount: 30
+  pathsInfrontAmount: 12
   jumpForce: 70
   jump:
     m_Name: Jump

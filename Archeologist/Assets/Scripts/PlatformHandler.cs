@@ -16,7 +16,7 @@ public class PlatformHandler : MonoBehaviour
         {
             float obstaclePlacement = ((int)(random.NextDouble() * 3) - 1) * obstaclePlacementRange;
             Vector3 obstaclePosition = new Vector3(obstaclePlacement, transform.position.y + 1f, transform.position.z);
-            int index = random.Next(0, obstacles.Count-1);
+            int index = random.Next(0, obstacles.Count);
             Instantiate(obstacles[index], obstaclePosition, Quaternion.identity,transform);
         }
     }
@@ -25,7 +25,7 @@ public class PlatformHandler : MonoBehaviour
         float newZ = transform.position.z - movementSpeed * Time.deltaTime;
         transform.position = new Vector3(transform.position.x, transform.position.y, newZ);
 
-        if(transform.position.z < -30)
+        if(transform.position.z < -30&&gameObject.name == "Start")
         {
             RemovePlatform();
         }

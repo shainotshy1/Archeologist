@@ -54,7 +54,7 @@ public class PathHandler : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         setPosition = Position.Middle;
 
-        Vector3 newPosition = new Vector3(7.5f, 0, -7.5f);
+        Vector3 newPosition = new Vector3(0, 0, -7.5f);
         platforms.Enqueue(Instantiate(startPath, newPosition, Quaternion.identity));
 
         for (int i = 1; i <= pathsInfrontAmount*2; i++)
@@ -67,6 +67,11 @@ public class PathHandler : MonoBehaviour
     {
         ProcessInput();
         CreatePath();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
     private void CreatePath()
     {
