@@ -27,6 +27,7 @@ public class PathHandler : MonoBehaviour
     bool isGrounded;
     Position setPosition;
     Rigidbody rigidBody;
+    int platformsPast = 0;
     Queue<GameObject> platforms = new Queue<GameObject>();
     private void OnCollisionStay(Collision collision)
     {
@@ -80,7 +81,12 @@ public class PathHandler : MonoBehaviour
             Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance * pathsInfrontAmount);
 
             platforms.Dequeue().GetComponent<PlatformHandler>().RemovePlatform();
-            platforms.Enqueue(Instantiate(newPath,newPosition,Quaternion.identity));
+            platformsPast++;
+
+            if (platformsPast + 2 >= pathsInfrontAmount)
+            {
+                platforms.Enqueue(Instantiate(newPath, newPosition, Quaternion.identity));
+            }
         }
     }
     private void ProcessInput()
