@@ -10,6 +10,7 @@ public class PathHandler : MonoBehaviour
 {
     [SerializeField] InputAction movement;
     [SerializeField] GameObject newPath;
+    [SerializeField] GameObject startPath;
     [SerializeField] float pathSeperatorDistance;
     [SerializeField] float pathSeperatorHeight;
     [SerializeField] int pathsInfrontAmount;
@@ -53,9 +54,12 @@ public class PathHandler : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         setPosition = Position.Middle;
 
-        for(int i = 0; i <= pathsInfrontAmount*2; i++)
+        Vector3 newPosition = new Vector3(7.5f, 0, -7.5f);
+        platforms.Enqueue(Instantiate(startPath, newPosition, Quaternion.identity));
+
+        for (int i = 1; i <= pathsInfrontAmount*2; i++)
         {
-            Vector3 newPosition = new Vector3(0, 0, movementDistance* i);
+            newPosition = new Vector3(0, 0, pathSeperatorDistance*i);
             platforms.Enqueue(Instantiate(newPath, newPosition, Quaternion.identity));
         }
     }
@@ -66,7 +70,7 @@ public class PathHandler : MonoBehaviour
     }
     private void CreatePath()
     {
-        if (platforms.Peek().transform.position.z < transform.position.z - 10)
+        if (platforms.Peek().transform.position.z < transform.position.z - 4*pathSeperatorDistance)
         {
             Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance * pathsInfrontAmount);
 

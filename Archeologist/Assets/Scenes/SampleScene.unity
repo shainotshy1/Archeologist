@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.62855303, g: 0.6988444, b: 0.74391043, a: 1}
+  m_IndirectSpecularColor: {r: 0.40709493, g: 0.71426195, b: 0.8581933, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -314,22 +314,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3534429972912986473, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
-      propertyPath: newPath
-      value: 
-      objectReference: {fileID: 7843164984701477885, guid: 1f5673acb4f18b844a468b965c835f9a, type: 3}
-    - target: {fileID: 3534429972912986473, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
-      propertyPath: pathsInfrontAmount
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 3534429972912986473, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
-      propertyPath: movementDirection.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3534429972912986473, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
-      propertyPath: pathSeperatorDistance
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 4293558028592454060, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: m_Name
       value: Player
