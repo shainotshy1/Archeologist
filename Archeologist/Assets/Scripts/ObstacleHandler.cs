@@ -12,7 +12,7 @@ public class ObstacleHandler : MonoBehaviour
             if (GetComponent<Rigidbody>() == null)
             {
                 gameObject.AddComponent<BoxCollider>();
-                gameObject.GetComponent<BoxCollider>().size = new Vector3(1, 1, 1);
+                gameObject.GetComponent<BoxCollider>().size = new Vector3(3, 3, 3);
 
                 gameObject.AddComponent<Rigidbody>();
                 gameObject.GetComponent<Rigidbody>().useGravity = false;
