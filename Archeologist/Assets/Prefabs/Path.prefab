@@ -362,7 +362,7 @@ MonoBehaviour:
   - {fileID: 7175414335155321399, guid: 6696d127f3c5be8429319c60b9bd4317, type: 3}
   - {fileID: 7175414335155321399, guid: 39069849061e4ac4ba04d203a801860a, type: 3}
   obstaclePlacementRange: 3.8
-  movementSpeed: 10
+  movementSpeed: 15
 --- !u!65 &1283556659872330775
 BoxCollider:
   m_ObjectHideFlags: 0

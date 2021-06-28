@@ -375,6 +375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0310490b2f3ce6c4ca25d7f49dcf9190, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementSpeed: 20
   movement:
     m_Name: Movement
     m_Type: 0
@@ -457,9 +458,9 @@ MonoBehaviour:
       m_Flags: 8
   newPath: {fileID: 7843164984701477885, guid: 1f5673acb4f18b844a468b965c835f9a, type: 3}
   startPath: {fileID: 7759538259351163384, guid: a545aecb60d12ab498c6513cc16080c3, type: 3}
-  pathSeperatorDistance: 19.8
+  pathSeperatorDistance: 19
   pathSeperatorHeight: 0
-  pathsInfrontAmount: 15
+  pathsInfrontAmount: 10
   jumpForce: 70
   jump:
     m_Name: Jump

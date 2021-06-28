@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody))]
 public class PathHandler : MonoBehaviour
 {
+    [SerializeField] float movementSpeed;
     [SerializeField] InputAction movement;
     [SerializeField] GameObject newPath;
     [SerializeField] GameObject startPath;
@@ -19,6 +20,7 @@ public class PathHandler : MonoBehaviour
     [SerializeField] float movementDistance;
     [SerializeField] float horizontalSpeed;
 
+    public static float speed;
     enum Position
     {
         Left, Middle, Right
@@ -54,14 +56,14 @@ public class PathHandler : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody>();
         setPosition = Position.Middle;
+        speed = movementSpeed;
 
-        Vector3 newPosition = new Vector3(0, 0, -7.5f);
-        platforms.Enqueue(Instantiate(startPath, newPosition, Quaternion.identity));
-
-        for (int i = 1; i <= pathsInfrontAmount*2; i++)
+        for (int i = -4; i <= pathsInfrontAmount; i++)
         {
-            newPosition = new Vector3(0, 0, pathSeperatorDistance*i);
-            platforms.Enqueue(Instantiate(newPath, newPosition, Quaternion.identity));
+            GameObject path = (i == 0) ? startPath : newPath;
+            Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance*i);
+            GameObject addedPath = Instantiate(path, newPosition, Quaternion.identity);
+            platforms.Enqueue(addedPath);
         }
     }
     private void Update()
@@ -83,10 +85,9 @@ public class PathHandler : MonoBehaviour
             platforms.Dequeue().GetComponent<PlatformHandler>().RemovePlatform();
             platformsPast++;
 
-            if (platformsPast + 2 >= pathsInfrontAmount)
-            {
-                platforms.Enqueue(Instantiate(newPath, newPosition, Quaternion.identity));
-            }
+            GameObject addedPath = Instantiate(newPath, newPosition, Quaternion.identity);
+            addedPath.GetComponent<PlatformHandler>().GenerateObstacle();
+            platforms.Enqueue(addedPath);
         }
     }
     private void ProcessInput()
