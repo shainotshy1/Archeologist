@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObstacleHandler : MonoBehaviour
 {
-    void Update()
+    private void Update()
     {
         if(transform.localPosition.z <= PathHandler.pathSeperatorDistance/2)
         {
@@ -18,5 +18,9 @@ public class ObstacleHandler : MonoBehaviour
                 gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             }
         }    
+    }
+    public void SetXPosition(float xPos) 
+    {
+        transform.localPosition = new Vector3(xPos, 0, 0);
     }
 }

@@ -26,10 +26,11 @@ public class PlatformHandler : MonoBehaviour
     {
         if (obstacles.Count > 0)
         {
-            float obstaclePlacement = ((int)(random.NextDouble() * 3)-1)*PlayerControls.playerMovementDistance;
-            Vector3 obstaclePosition = new Vector3(obstaclePlacement, 0, transform.position.z);
+            float obstaclePlacement = ((int)(random.NextDouble() * 3) - 1) * PlayerControls.playerMovementDistance;
+            Vector3 obstaclePosition = new Vector3(transform.position.x, 0, transform.position.z);
             int index = (int)(random.NextDouble() * obstacles.Count);
-            Instantiate(obstacles[index], obstaclePosition, Quaternion.Euler(0,angleY,0), transform);
+            GameObject newObstacle = Instantiate(obstacles[index], obstaclePosition, Quaternion.Euler(0,angleY,0), transform);
+            newObstacle.GetComponent<ObstacleHandler>().SetXPosition(obstaclePlacement);
         }
     }
 }
