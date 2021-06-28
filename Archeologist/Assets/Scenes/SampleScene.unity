@@ -361,6 +361,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 648345315, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
+      propertyPath: enableCollisions
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 963194227, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: field of view
       value: 60
@@ -387,11 +391,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 963194228, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000007444131
+      value: -0.000000007444131
       objectReference: {fileID: 0}
     - target: {fileID: 963194228, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -3.09963e-10
+      value: 3.09963e-10
       objectReference: {fileID: 0}
     - target: {fileID: 1330484012, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -491,11 +495,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8804532532331244606, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000007444131
+      value: -0.000000007444131
       objectReference: {fileID: 0}
     - target: {fileID: 8804532532331244606, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -3.09963e-10
+      value: 3.09963e-10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fdadfb4ca5a30de408c06a9baefa713b, type: 3}

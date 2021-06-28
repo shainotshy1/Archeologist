@@ -11,8 +11,10 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] InputAction movement;
     [SerializeField] InputAction jump;
     [SerializeField] float horizontalSpeed;
+    [SerializeField] bool enableCollisions;
 
     public static float playerMovementDistance;
+    public static bool collisionsEnabled;
 
     enum Position
     {
@@ -115,6 +117,7 @@ public class PlayerControls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        collisionsEnabled = enableCollisions;
         ProcessInput();
         if (transform.position.y < -10)
         {

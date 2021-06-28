@@ -13,7 +13,7 @@ public class PathHandler : MonoBehaviour
     [SerializeField] int pathsInfrontAmount;
 
     public static float pathSeperatorDistance;
-    float rotation;
+    public static float rotation;
     List<GameObject> platforms = new List<GameObject>();
     System.Random random = new System.Random();
     enum CurrentAction
@@ -56,11 +56,13 @@ public class PathHandler : MonoBehaviour
         Vector3 newPos = new Vector3(platforms[0].transform.localPosition.x, platforms[0].transform.localPosition.y, platforms[0].transform.localPosition.z - Time.deltaTime * movementSpeed);
         platforms[0].transform.localPosition = newPos;
         platforms[0].transform.rotation = Quaternion.Euler(0, rotation, 0);
+        if(!platforms[0].activeInHierarchy)platforms[0].SetActive(true);
         for (int i = 1; i < platforms.Count; i++)
         {
             newPos = new Vector3(platforms[i-1].transform.localPosition.x, platforms[i-1].transform.localPosition.y, platforms[i-1].transform.localPosition.z +pathSeperatorDistance);
             platforms[i].transform.localPosition = newPos;
             platforms[i].transform.rotation = Quaternion.Euler(0, rotation, 0);
+            if (!platforms[i].activeInHierarchy) platforms[i].SetActive(true);
         }
     }
 
@@ -92,6 +94,7 @@ public class PathHandler : MonoBehaviour
             Vector3 newPosition = new Vector3(platforms[platforms.Count - 1].transform.localPosition.x, 0, pathSeperatorDistance + platforms[platforms.Count - 1].transform.localPosition.z);
             GameObject addedPath = Instantiate(straightPath, newPosition, Quaternion.Euler(0, rotation, 0), transform);
             addedPath.GetComponent<PlatformHandler>().GenerateObstacle();
+            addedPath.SetActive(false);
             platforms.Add(addedPath);
         }
     }

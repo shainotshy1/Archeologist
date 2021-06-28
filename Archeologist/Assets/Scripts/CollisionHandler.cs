@@ -7,7 +7,7 @@ public class CollisionHandler : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if(collision.gameObject.tag == "Player"&&PlayerControls.collisionsEnabled)
         {
             int index = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(index);

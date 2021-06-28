@@ -6,7 +6,7 @@ public class ObstacleSelfDestruct : MonoBehaviour
 {
     void Update()
     {
-        if (transform.position.y < 0)
+        if (transform.localPosition.y < 0)
         {
             Destroy(gameObject);
         }
