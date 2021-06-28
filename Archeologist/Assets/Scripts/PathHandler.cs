@@ -8,7 +8,10 @@ using UnityEngine.SceneManagement;
 public class PathHandler : MonoBehaviour
 {
     [SerializeField] float movementSpeed;
-    [SerializeField] GameObject newPath;
+    [SerializeField] GameObject straightPath;
+    [SerializeField] GameObject rightTurn;
+    [SerializeField] GameObject leftTurn;
+    [SerializeField] GameObject forkPath;
     [SerializeField] float pathSeperatorHeight;
     [SerializeField] int pathsInfrontAmount;
 
@@ -16,12 +19,12 @@ public class PathHandler : MonoBehaviour
     List<GameObject> platforms = new List<GameObject>();
     private void Start()
     {
-        pathSeperatorDistance = newPath.GetComponent<BoxCollider>().size.z;
+        pathSeperatorDistance = straightPath.GetComponent<BoxCollider>().size.z;
 
         for (int i = -4; i <= pathsInfrontAmount; i++)
         {
             Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance*i);
-            GameObject addedPath = Instantiate(newPath, newPosition, Quaternion.identity,transform);
+            GameObject addedPath = Instantiate(straightPath, newPosition, Quaternion.identity,transform);
             platforms.Add(addedPath);
         }
     }
@@ -54,7 +57,7 @@ public class PathHandler : MonoBehaviour
             platforms.RemoveAt(0);
 
             Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance+platforms[platforms.Count-1].transform.position.z);
-            GameObject addedPath = Instantiate(newPath, newPosition, Quaternion.identity, transform);
+            GameObject addedPath = Instantiate(straightPath, newPosition, Quaternion.identity, transform);
             addedPath.GetComponent<PlatformHandler>().GenerateObstacle();
             platforms.Add(addedPath);
         }
