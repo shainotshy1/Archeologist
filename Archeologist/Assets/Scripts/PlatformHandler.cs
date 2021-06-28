@@ -5,18 +5,15 @@ using UnityEngine;
 public class PlatformHandler : MonoBehaviour
 {
     [SerializeField] List<GameObject> obstacles;
-    [SerializeField] float obstaclePlacementRange;
 
     System.Random random = new System.Random();
     void Start()
     {
-        transform.rotation = Quaternion.Euler(0, 90f, 0);
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.x / 3;
     }
     private void Update()
     {
-        float newZ = transform.position.z - PathHandler.speed * Time.deltaTime;
-        transform.position = new Vector3(transform.position.x, transform.position.y, newZ);
-
         if(transform.position.z < -30&&gameObject.name == "Start")
         {
             RemovePlatform();
@@ -30,8 +27,8 @@ public class PlatformHandler : MonoBehaviour
     {
         if (obstacles.Count > 0)
         {
-            float obstaclePlacement = ((int)(random.NextDouble() * 3)-1)* obstaclePlacementRange;
-            Vector3 obstaclePosition = new Vector3(transform.position.x, transform.position.y + 1f, obstaclePlacement);
+            float obstaclePlacement = ((int)(random.NextDouble() * 3)-1)* PlayerControls.playerMovementDistance;
+            Vector3 obstaclePosition = new Vector3(obstaclePlacement, transform.position.y, transform.position.z);
             int index = (int)(random.NextDouble() * obstacles.Count);
             Instantiate(obstacles[index], obstaclePosition, Quaternion.identity, transform);
         }

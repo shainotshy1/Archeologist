@@ -5,159 +5,58 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PathHandler : MonoBehaviour
 {
     [SerializeField] float movementSpeed;
-    [SerializeField] InputAction movement;
     [SerializeField] GameObject newPath;
-    [SerializeField] GameObject startPath;
-    [SerializeField] float pathSeperatorDistance;
     [SerializeField] float pathSeperatorHeight;
     [SerializeField] int pathsInfrontAmount;
-    [SerializeField] float jumpForce;
-    [SerializeField] InputAction jump;
-    [SerializeField] float movementDistance;
-    [SerializeField] float horizontalSpeed;
 
-    public static float speed;
-    enum Position
-    {
-        Left, Middle, Right
-    }
-    Vector3 movementDirection = new Vector3(0, 0, 1);
-    bool isGrounded;
-    Position setPosition;
-    Rigidbody rigidBody;
-    int platformsPast = 0;
-    Queue<GameObject> platforms = new Queue<GameObject>();
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "Ground")
-        {
-            isGrounded = true;
-        }
-    }
-    private void OnEnable()
-    {
-        movement.Enable();
-        jump.Enable();
-    }
-    private void OnDisable()
-    {
-        movement.Disable();
-        jump.Disable();
-    }
-    private void Awake()
-    {
-        transform.rotation = Quaternion.identity;
-    }
+    public static float pathSeperatorDistance;
+    List<GameObject> platforms = new List<GameObject>();
     private void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
-        setPosition = Position.Middle;
-        speed = movementSpeed;
+        pathSeperatorDistance = newPath.GetComponent<BoxCollider>().size.z;
 
         for (int i = -4; i <= pathsInfrontAmount; i++)
         {
-            GameObject path = (i == 0) ? startPath : newPath;
             Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance*i);
-            GameObject addedPath = Instantiate(path, newPosition, Quaternion.identity);
-            platforms.Enqueue(addedPath);
+            GameObject addedPath = Instantiate(newPath, newPosition, Quaternion.identity,transform);
+            platforms.Add(addedPath);
         }
     }
     private void Update()
     {
-        ProcessInput();
         CreatePath();
-
+        MovePaths();
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
     }
+
+    private void MovePaths()
+    {
+        Vector3 newPos = new Vector3(platforms[0].transform.position.x, platforms[0].transform.position.y, platforms[0].transform.position.z - Time.deltaTime * movementSpeed);
+        platforms[0].transform.position = newPos;
+        for(int i = 1; i < platforms.Count; i++)
+        {
+            newPos = new Vector3(platforms[i-1].transform.position.x, platforms[i-1].transform.position.y, platforms[i-1].transform.position.z + pathSeperatorDistance);
+            platforms[i].transform.position = newPos;
+        }
+    }
+
     private void CreatePath()
     {
-        if (platforms.Peek().transform.position.z < transform.position.z - 4*pathSeperatorDistance)
+        if (platforms[0].transform.position.z < transform.position.z - 4*pathSeperatorDistance)
         {
-            Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance * pathsInfrontAmount);
+            platforms[0].GetComponent<PlatformHandler>().RemovePlatform();
+            platforms.RemoveAt(0);
 
-            platforms.Dequeue().GetComponent<PlatformHandler>().RemovePlatform();
-            platformsPast++;
-
-            GameObject addedPath = Instantiate(newPath, newPosition, Quaternion.identity);
+            Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance+platforms[platforms.Count-1].transform.position.z);
+            GameObject addedPath = Instantiate(newPath, newPosition, Quaternion.identity, transform);
             addedPath.GetComponent<PlatformHandler>().GenerateObstacle();
-            platforms.Enqueue(addedPath);
+            platforms.Add(addedPath);
         }
-    }
-    private void ProcessInput()
-    {
-        float verticalValue = (jump.ReadValue<float>() > 0.5) ? jumpForce : 0;
-
-        if (Mathf.Abs(verticalValue) > Mathf.Epsilon && isGrounded)
-        {
-            StartCoroutine(JumpRoutine(verticalValue));
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-        {
-            if (setPosition == Position.Middle)
-            {
-                setPosition = Position.Left;
-            }
-            else if (setPosition == Position.Right)
-            {
-                setPosition = Position.Middle;
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-        {
-            if (setPosition == Position.Middle)
-            {
-                setPosition = Position.Right;
-            }
-            if (setPosition == Position.Left)
-            {
-                setPosition = Position.Middle;
-            }
-        }
-
-        GoToPosition(setPosition);
-    }
-    private void GoToPosition(Position position)
-    {
-        if (position == Position.Middle)
-        {
-            float xPos = 0f;
-            float zPos = 0f;
-            if(movementDirection.x == 1||movementDirection.x == -1)
-            {
-                xPos = transform.position.x;
-            }
-            else if(movementDirection.z == 1||movementDirection.z == -1)
-            {
-                zPos = transform.position.z;
-            }
-
-            Vector3 endPosition = new Vector3(xPos, transform.position.y, zPos);
-            transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
-        }
-        if (position == Position.Left)
-        {
-            Vector3 endPosition = new Vector3(transform.position.x*movementDirection.x-movementDistance*movementDirection.z, transform.position.y, transform.position.z*movementDirection.z+movementDistance*movementDirection.x);
-            transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
-        }
-        else if (position == Position.Right)
-        {
-            Vector3 endPosition = new Vector3(transform.position.x*movementDirection.x+movementDistance*movementDirection.z, transform.position.y, transform.position.z*movementDirection.z-movementDistance*movementDirection.x);
-            transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
-        }
-    }
-    IEnumerator JumpRoutine(float verticalValue)
-    {
-        rigidBody.ResetInertiaTensor();
-        rigidBody.ResetCenterOfMass();
-        rigidBody.AddRelativeForce(0, verticalValue * Time.deltaTime, 0, ForceMode.Impulse);
-        yield return new WaitForSeconds(0.1f);
-        isGrounded = false;
     }
 }

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 52545226011299156}
   - component: {fileID: 7904118785809563346}
   - component: {fileID: 4586943021783450540}
-  - component: {fileID: 5699715023093567106}
   m_Layer: 0
   m_Name: Prism
   m_TagString: Untagged
@@ -28,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 422913509683888835}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5, y: -0.5, z: -0.5}
+  m_LocalPosition: {x: -0.5, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4415103497320652945}
@@ -262,20 +261,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 422913509683888835}
   m_Mesh: {fileID: 0}
---- !u!64 &5699715023093567106
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 422913509683888835}
-  m_Material: {fileID: 13400000, guid: e43fb629128216f47bc12e44661a3a33, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &7175414335155321399
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,9 +270,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4415103497320652945}
-  - component: {fileID: 8575072604420894618}
   - component: {fileID: 2425389862347966547}
-  - component: {fileID: 8640753942417317325}
+  - component: {fileID: 1643105529013881281}
+  - component: {fileID: -3412758522878172953}
   m_Layer: 0
   m_Name: Obstacle2
   m_TagString: Untagged
@@ -310,22 +295,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &8575072604420894618
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7175414335155321399}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 114
-  m_CollisionDetection: 0
 --- !u!114 &2425389862347966547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c0a15717d1518459d0670569ea8f11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8640753942417317325
+--- !u!114 &1643105529013881281
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -348,5 +317,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36aeda6ea5506b641adf73acb36ee1e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3412758522878172953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7175414335155321399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57085d439c798947a8d224edb72863c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
