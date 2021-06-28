@@ -84,25 +84,25 @@ public class PlayerControls : MonoBehaviour
             float zPos = 0f;
             if (movementDirection.x == 1 || movementDirection.x == -1)
             {
-                xPos = transform.position.x;
+                xPos = transform.localPosition.x;
             }
             else if (movementDirection.z == 1 || movementDirection.z == -1)
             {
-                zPos = transform.position.z;
+                zPos = transform.localPosition.z;
             }
 
-            Vector3 endPosition = new Vector3(xPos, transform.position.y, zPos);
-            transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
+            Vector3 endPosition = new Vector3(xPos, transform.localPosition.y, zPos);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
         }
         if (position == Position.Left)
         {
-            Vector3 endPosition = new Vector3(transform.position.x * movementDirection.x - playerMovementDistance * movementDirection.z, transform.position.y, transform.position.z * movementDirection.z + playerMovementDistance * movementDirection.x);
-            transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
+            Vector3 endPosition = new Vector3(transform.localPosition.x * movementDirection.x - playerMovementDistance * movementDirection.z, transform.localPosition.y, transform.localPosition.z * movementDirection.z + playerMovementDistance * movementDirection.x);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
         }
         else if (position == Position.Right)
         {
-            Vector3 endPosition = new Vector3(transform.position.x * movementDirection.x + playerMovementDistance * movementDirection.z, transform.position.y, transform.position.z * movementDirection.z - playerMovementDistance * movementDirection.x);
-            transform.position = Vector3.Lerp(transform.position, endPosition, Time.deltaTime * horizontalSpeed);
+            Vector3 endPosition = new Vector3(transform.localPosition.x * movementDirection.x + playerMovementDistance * movementDirection.z, transform.localPosition.y, transform.localPosition.z * movementDirection.z - playerMovementDistance * movementDirection.x);
+            transform.localPosition = Vector3.Lerp(transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
         }
     }
     IEnumerator JumpRoutine(float verticalValue)
@@ -119,7 +119,7 @@ public class PlayerControls : MonoBehaviour
     {
         collisionsEnabled = enableCollisions;
         ProcessInput();
-        if (transform.position.y < -10)
+        if (transform.localPosition.y < -10)
         {
             int index = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(index);

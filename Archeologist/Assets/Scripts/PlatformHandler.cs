@@ -9,7 +9,6 @@ public class PlatformHandler : MonoBehaviour
     System.Random random = new System.Random();
     void Start()
     {
-        transform.localRotation = Quaternion.Euler(0, 0, 0);
         PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.x / 3;
     }
     private void Update()
@@ -23,14 +22,14 @@ public class PlatformHandler : MonoBehaviour
     {
         Destroy(gameObject);
     }
-    public void GenerateObstacle()
+    public void GenerateObstacle(float angleY)
     {
         if (obstacles.Count > 0)
         {
-            float obstaclePlacement = ((int)(random.NextDouble() * 3)-1)* PlayerControls.playerMovementDistance;
-            Vector3 obstaclePosition = new Vector3(obstaclePlacement, transform.position.y, transform.position.z);
+            float obstaclePlacement = ((int)(random.NextDouble() * 3)-1)*PlayerControls.playerMovementDistance;
+            Vector3 obstaclePosition = new Vector3(obstaclePlacement, 0, transform.position.z);
             int index = (int)(random.NextDouble() * obstacles.Count);
-            Instantiate(obstacles[index], obstaclePosition, Quaternion.Euler(0, PathHandler.rotation, 0), transform);
+            Instantiate(obstacles[index], obstaclePosition, Quaternion.Euler(0,angleY,0), transform);
         }
     }
 }
