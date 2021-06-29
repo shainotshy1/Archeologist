@@ -22,7 +22,6 @@ public class PathHandler : MonoBehaviour
     CurrentAction currentAction;
     private void Start()
     {
-        UpdatePathRotation();
         pathSeperatorDistance = straightPath.GetComponent<BoxCollider>().size.z;
 
         for (int i = -4; i <= pathsInfrontAmount; i++)
@@ -34,17 +33,12 @@ public class PathHandler : MonoBehaviour
     }
     private void Update()
     {
-        UpdatePathRotation();
         MovePaths();
         CreatePath();
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
         }
-    }
-
-    private void UpdatePathRotation()
-    {
     }
 
     private void MovePaths()
