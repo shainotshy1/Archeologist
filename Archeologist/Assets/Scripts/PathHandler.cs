@@ -7,14 +7,20 @@ using UnityEngine.SceneManagement;
 
 public class PathHandler : MonoBehaviour
 {
+    public static float pathSeperatorDistance;
+
     [SerializeField] float movementSpeed;
     [SerializeField] GameObject straightPath;
+    [SerializeField] GameObject rightTurn;
+    [SerializeField] GameObject leftTurn;
+    [SerializeField] GameObject forkPath;
     [SerializeField] float pathSeperatorHeight;
     [SerializeField] int pathsInfrontAmount;
+    [SerializeField] int minPlatformsBetweenTurns;
 
-    public static float pathSeperatorDistance;
     List<GameObject> platforms = new List<GameObject>();
     System.Random random = new System.Random();
+    int platformsSinceLastTurn = 0;
     enum CurrentAction
     {
         Straight,LeftTurn,RightTurn,Fork
@@ -22,7 +28,15 @@ public class PathHandler : MonoBehaviour
     CurrentAction currentAction;
     private void Start()
     {
-        pathSeperatorDistance = straightPath.GetComponent<BoxCollider>().size.z;
+        BoxCollider boxCollider = straightPath.GetComponent<BoxCollider>();
+        if (boxCollider != null)
+        {
+            pathSeperatorDistance = boxCollider.size.z;
+        }
+        else
+        {
+            pathSeperatorDistance = 160;
+        }
 
         for (int i = -4; i <= pathsInfrontAmount; i++)
         {
@@ -64,25 +78,34 @@ public class PathHandler : MonoBehaviour
             platforms.RemoveAt(0);
 
             int randomVal = (int)(random.NextDouble() * 100);
-
-            if (randomVal == 0)
+            GameObject pathType;
+            if (randomVal < 3 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
+                pathType = leftTurn;
                 currentAction = CurrentAction.LeftTurn;
+                platformsSinceLastTurn = 0;
             }
-            else if(randomVal == 1){
-                currentAction = CurrentAction.RightTurn;
-            }
-            else if(randomVal == 2)
+            else if(randomVal < 6 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
+                pathType = rightTurn;
+                currentAction = CurrentAction.RightTurn;
+                platformsSinceLastTurn = 0;
+            }
+            else if(randomVal < 9 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
+            {
+                pathType = forkPath;
                 currentAction = CurrentAction.Fork;
+                platformsSinceLastTurn = 0;
             }
             else
             {
+                pathType = straightPath;
                 currentAction = CurrentAction.Straight;
+                platformsSinceLastTurn++;
             }
 
             Vector3 newPosition = new Vector3(platforms[platforms.Count - 1].transform.localPosition.x, 0, pathSeperatorDistance + platforms[platforms.Count - 1].transform.localPosition.z);
-            GameObject addedPath = Instantiate(straightPath, newPosition, Quaternion.Euler(0, transform.eulerAngles.y, 0), transform);
+            GameObject addedPath = Instantiate(pathType, newPosition, Quaternion.Euler(0, transform.eulerAngles.y, 0), transform);
             addedPath.GetComponent<PlatformHandler>().GenerateObstacle(transform.eulerAngles.y);
             addedPath.SetActive(false);
             platforms.Add(addedPath);
