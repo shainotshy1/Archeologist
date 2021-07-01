@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TurnType 
+{ 
+    Left,Right,Straight,Fork
+}
 public class PlatformHandler : MonoBehaviour
 {
     [SerializeField] List<GameObject> obstacles;
+    public TurnType turnType;
 
     System.Random random = new System.Random();
     void Start()
     {
-        PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.x / 3;
+        if(PlayerControls.playerMovementDistance == 0) PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.z / 2.1f;
     }
     private void Update()
     {

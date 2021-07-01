@@ -13,7 +13,7 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] float horizontalSpeed;
     [SerializeField] bool enableCollisions;
 
-    public static float playerMovementDistance;
+    public static float playerMovementDistance = 0f;
     public static bool collisionsEnabled;
 
     enum Position
@@ -74,13 +74,13 @@ public class PlayerControls : MonoBehaviour
             }
         }
 
-        GoToPosition(setPosition);
+        //GoToPosition(setPosition);
     }
     private void GoToPosition(Position position)
     {
         if (position == Position.Middle)
         {
-            float xPos = 0f;
+            float xPos = PathHandler.middleXVal;
             float zPos = 0f;
             if (movementDirection.x == 1 || movementDirection.x == -1)
             {
@@ -114,7 +114,6 @@ public class PlayerControls : MonoBehaviour
         isGrounded = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         collisionsEnabled = enableCollisions;
