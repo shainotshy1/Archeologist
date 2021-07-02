@@ -107,7 +107,7 @@ public class PlayerControls : MonoBehaviour
             MoveChild(playerMovementDistance * movementDirection.z, -playerMovementDistance * movementDirection.x);
         }
     }
-    private void MoveChild(float xChange,float zChange)
+    private void MoveChild(float newX,float newZ)
     {
         foreach (Transform child in transform)
         {
@@ -115,7 +115,7 @@ public class PlayerControls : MonoBehaviour
             {
                 if (grandChild.gameObject.tag == "Body")
                 {
-                    Vector3 endPosition = new Vector3(xChange+futurePosition.x*(xChange*3/4), grandChild.transform.localPosition.y, zChange + futurePosition.z * (zChange * 3 / 4));
+                    Vector3 endPosition = new Vector3(newX, grandChild.transform.localPosition.y, newZ);
                     grandChild.transform.localPosition = Vector3.Lerp(grandChild.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
                 }
             }
