@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class PathHandler : MonoBehaviour
 {
     public static float pathSeperatorDistance;
-    public static float middleXVal;
 
     [SerializeField] float movementSpeed;
     [SerializeField] GameObject straightPath;
@@ -20,23 +19,27 @@ public class PathHandler : MonoBehaviour
     [SerializeField] int minPlatformsBetweenTurns;
     [SerializeField] float rotationRadius;
     [SerializeField] float stopShift;
+    [SerializeField] float turnPlatformShiftRight;
+    [SerializeField] float turnPlatformShiftLeft;
 
-    Vector3 direction;
+    Vector3 currentDirection;
+    Vector3 nextDirection;
     List<GameObject> platforms = new List<GameObject>();
     System.Random random = new System.Random();
     float targetAngle;
     float currentAngle;
-    int platformsSinceLastTurn = 0;
-    bool turnMade;
-    bool directionSet;
     float currentSpeed;
+    float _turnPlatformShift;
+    int platformsSinceLastTurn = 0;
+    bool directionSet;
     TurnType currentTurnType;
     Transform playerTransform;
     private void Start()
     {
+        _turnPlatformShift = 0f;
         directionSet = true;
-        middleXVal = 0f;
-        direction = new Vector3(0, 0, 1);
+        currentDirection = new Vector3(0, 0, 1);
+        nextDirection = currentDirection;
         playerTransform = FindObjectOfType<PlayerControls>().GetComponent<Transform>();
         currentSpeed = movementSpeed;
         targetAngle = currentAngle = 0f;
@@ -62,8 +65,8 @@ public class PathHandler : MonoBehaviour
     {
         if(currentSpeed != 0) currentSpeed = movementSpeed;
         TurnPlayer();
-        MovePaths();
         CreatePath();
+        MovePaths();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -74,20 +77,20 @@ public class PathHandler : MonoBehaviour
     private void TurnPlayer()
     {
         currentTurnType = platforms[4].GetComponent<PlatformHandler>().turnType;
-        if (currentTurnType != TurnType.Straight)
+        if (currentTurnType != TurnType.Straight && currentSpeed != 0 && currentDirection != nextDirection)
         {
-            if (platforms[4].GetComponent<Transform>().position.x + platforms[4].GetComponent<Transform>().position.z< playerTransform.position.x+playerTransform.position.z + stopShift && currentSpeed!=0)
+            if (platforms[4].GetComponent<Transform>().position.x * currentDirection.x + platforms[4].GetComponent<Transform>().position.z * currentDirection.z < playerTransform.position.x * currentDirection.x + playerTransform.position.z * currentDirection.z + stopShift*(currentDirection.x+currentDirection.z))
             {
                 directionSet = false;
                 currentSpeed = 0;
             }
         }
-        if ((currentTurnType == TurnType.Left ||currentTurnType==TurnType.Right)&& currentSpeed == 0)
+        if ((currentTurnType == TurnType.Left ||currentTurnType==TurnType.Right)&&currentSpeed == 0)
         {
             if(!directionSet)
             {
                 targetAngle = (currentTurnType==TurnType.Left)? currentAngle - 90f: currentAngle + 90f;
-                SwitchParentChildPosition(currentTurnType);
+                ChangePlayerRotationAxis(currentTurnType);
                 directionSet = true;
             }
             else if ((currentTurnType== TurnType.Left && currentAngle > targetAngle)|| (currentTurnType == TurnType.Right && currentAngle < targetAngle))
@@ -99,11 +102,13 @@ public class PathHandler : MonoBehaviour
             else
             {
                 currentAngle = targetAngle;
+                currentDirection = nextDirection;
+                currentSpeed = movementSpeed;
             }
         }
     }
 
-    private void SwitchParentChildPosition(TurnType turn)
+    private void ChangePlayerRotationAxis(TurnType turn)
     {
         if (turn == TurnType.Straight) return;
         float newX = (turn == TurnType.Right) ? rotationRadius : -rotationRadius;
@@ -115,79 +120,123 @@ public class PathHandler : MonoBehaviour
             }
         }
         playerTransform.localPosition = new Vector3(newX, transform.localPosition.y, transform.localPosition.z);
-        middleXVal = newX;
     }
 
     private void MovePaths()
     {
-        int frontPath = 0;
-        float xChange = 0;
-        float zChange = -Time.deltaTime * currentSpeed*direction.z;
-        Vector3 newPos = new Vector3(platforms[frontPath].transform.localPosition.x + xChange, platforms[frontPath].transform.localPosition.y, platforms[frontPath].transform.localPosition.z + zChange);
-        platforms[frontPath].transform.localPosition = newPos;
-        platforms[frontPath].transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-        if (!platforms[frontPath].activeInHierarchy) platforms[frontPath].SetActive(true);
-        for (int i = frontPath + 1; i < platforms.Count; i++)
-        {
-            newPos = new Vector3(platforms[i - 1].transform.localPosition.x + pathSeperatorDistance*direction.x, platforms[i - 1].transform.localPosition.y, platforms[i - 1].transform.localPosition.z + pathSeperatorDistance*direction.z);
+        float xChange = -Time.deltaTime * currentSpeed * currentDirection.x;
+        float zChange = -Time.deltaTime * currentSpeed * currentDirection.z;
 
+        for (int i = 0; i < platforms.Count; i++)
+        {
+            float y = platforms[i].transform.localPosition.y;
+            float x = platforms[i].transform.localPosition.x;
+            float z = platforms[i].transform.localPosition.z;
+
+            Vector3 newPos = new Vector3(x+xChange, y, z+zChange);
             platforms[i].transform.localPosition = newPos;
-            platforms[i].transform.rotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+            
             if (!platforms[i].activeInHierarchy) platforms[i].SetActive(true);
         }
     }
 
     private void CreatePath()
     {
-        if (platforms[0].transform.localPosition.z< transform.localPosition.z - 4*pathSeperatorDistance && platforms.Count>5)
+        if (platforms[0].transform.localPosition.x*currentDirection.x+platforms[0].transform.localPosition.z*currentDirection.z< transform.localPosition.z*currentDirection.z+transform.localPosition.x*currentDirection.x - 4*pathSeperatorDistance*(currentDirection.x+currentDirection.z) && platforms.Count>5)
         {
             platforms[0].GetComponent<PlatformHandler>().RemovePlatform();
             platforms.RemoveAt(0);
 
-            if (!turnMade)
+            int randomVal = (int)(random.NextDouble() * 100);
+            GameObject pathType;
+            TurnType turnType;
+
+            if (randomVal < 0 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
-                int randomVal = (int)(random.NextDouble() * 100);
-                GameObject pathType;
-                TurnType turnType;
+                pathType = leftTurn;
+                turnType = TurnType.Left;
+                platformsSinceLastTurn = 0;
+            }
+            else if (randomVal < 12 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
+            {
+                pathType = rightTurn;
+                turnType = TurnType.Right;
+                platformsSinceLastTurn = 0;
+            }
+            /*else if (randomVal < 9 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
+            {
+                pathType = forkPath;
+                turnType = TurnType.Fork;
+                platformsSinceLastTurn = 0;
+            }*/
+            else
+            {
+                pathType = straightPath;
+                turnType = TurnType.Straight;
+                platformsSinceLastTurn++;
+            }
 
-                if (randomVal < 3 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
-                {
-                    pathType = leftTurn;
-                    turnType = TurnType.Left;
-                    platformsSinceLastTurn = 0;
-                    turnMade = true;
-                }
-                else if (randomVal < 21 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
-                {
-                    pathType = rightTurn;
-                    turnType = TurnType.Right;
-                    platformsSinceLastTurn = 0;
-                    turnMade = true;
-                }
-                else if (randomVal < 9 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
-                {
-                    pathType = forkPath;
-                    turnType = TurnType.Fork;
-                    platformsSinceLastTurn = 0;
-                    turnMade = true;
-                }
-                else
-                {
-                    pathType = straightPath;
-                    turnType = TurnType.Straight;
-                    platformsSinceLastTurn++;
-                }
+            Vector3 newPosition = new Vector3(pathSeperatorDistance*nextDirection.x + platforms[platforms.Count - 1].transform.localPosition.x + _turnPlatformShift*(nextDirection.x+nextDirection.z), 0, pathSeperatorDistance*nextDirection.z + platforms[platforms.Count - 1].transform.localPosition.z + _turnPlatformShift * (nextDirection.x + nextDirection.z));
+            GameObject addedPath = Instantiate(pathType, newPosition, Quaternion.Euler(0, transform.eulerAngles.y, 0), transform);
+            addedPath.GetComponent<PlatformHandler>().turnType = turnType;
+            addedPath.transform.rotation = Quaternion.Euler(0, nextDirection.x*90, 0);
+            if(turnType == TurnType.Straight)
+            {
+                addedPath.GetComponent<PlatformHandler>().GenerateObstacle(transform.eulerAngles.y);
+            }
+            addedPath.SetActive(false);
+            platforms.Add(addedPath);
 
-                Vector3 newPosition = new Vector3(platforms[platforms.Count - 1].transform.localPosition.x, 0, pathSeperatorDistance + platforms[platforms.Count - 1].transform.localPosition.z);
-                GameObject addedPath = Instantiate(pathType, newPosition, Quaternion.Euler(0, transform.eulerAngles.y, 0), transform);
-                addedPath.GetComponent<PlatformHandler>().turnType = turnType;
-                if(turnType == TurnType.Straight)
-                {
-                    addedPath.GetComponent<PlatformHandler>().GenerateObstacle(transform.eulerAngles.y);
-                }
-                addedPath.SetActive(false);
-                platforms.Add(addedPath);
-            }   
+            ChangeDirection(turnType);
+        }
+    }
+    private void ChangeDirection(TurnType turn)
+    {
+        if(turn == TurnType.Left)
+        {
+            if (currentDirection == Vector3.right)
+            {
+                nextDirection = Vector3.forward;
+            }
+            else if(currentDirection == Vector3.left)
+            {
+                nextDirection = Vector3.back;
+            }
+            else if (currentDirection == Vector3.forward)
+            {
+                nextDirection = Vector3.left;
+            }
+            else if (currentDirection == Vector3.back)
+            {
+                nextDirection = Vector3.right;
+            }
+
+            _turnPlatformShift = turnPlatformShiftLeft;
+        }
+        else if(turn == TurnType.Right)
+        {
+            if (currentDirection == Vector3.right)
+            {
+                nextDirection = Vector3.back;
+            }
+            else if (currentDirection == Vector3.left)
+            {
+                nextDirection = Vector3.up;
+            }
+            else if (currentDirection == Vector3.forward)
+            {
+                nextDirection = Vector3.right;
+            }
+            else if (currentDirection == Vector3.back)
+            {
+                nextDirection = Vector3.left;
+            }
+
+            _turnPlatformShift = turnPlatformShiftRight;
+        }
+        else
+        {
+            _turnPlatformShift = 0f;
         }
     }
 }

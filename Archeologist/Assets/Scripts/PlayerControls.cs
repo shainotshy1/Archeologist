@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PlayerControls : MonoBehaviour
 {
     [SerializeField] float jumpForce;
@@ -18,9 +17,10 @@ public class PlayerControls : MonoBehaviour
 
     enum Position
     {
-        Left, Middle, Right
+        Left, Middle, Right,Idle
     }
-    Vector3 movementDirection = new Vector3(0, 0, 1);
+    Vector3 movementDirection = new Vector3(1, 0, 0);
+    Vector3 futurePosition = new Vector3(0, 0, 0);
     bool isGrounded;
     Position setPosition;
     Rigidbody rigidBody;
@@ -49,16 +49,18 @@ public class PlayerControls : MonoBehaviour
 
         if (Mathf.Abs(verticalValue) > Mathf.Epsilon && isGrounded)
         {
-            StartCoroutine(JumpRoutine(verticalValue));
+            //StartCoroutine(JumpRoutine(verticalValue));
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
         {
             if (setPosition == Position.Middle)
             {
+                futurePosition = new Vector3(0, 0, -1);
                 setPosition = Position.Left;
             }
             else if (setPosition == Position.Right)
             {
+                futurePosition = new Vector3(0, 0, 0);
                 setPosition = Position.Middle;
             }
         }
@@ -66,43 +68,57 @@ public class PlayerControls : MonoBehaviour
         {
             if (setPosition == Position.Middle)
             {
+                futurePosition = new Vector3(0, 0, 1);
                 setPosition = Position.Right;
             }
             if (setPosition == Position.Left)
             {
+                futurePosition = new Vector3(0, 0, 0);
                 setPosition = Position.Middle;
             }
         }
 
-        //GoToPosition(setPosition);
+        GoToPosition(setPosition);
     }
     private void GoToPosition(Position position)
     {
         if (position == Position.Middle)
         {
-            float xPos = PathHandler.middleXVal;
+            float xPos = 0f;
             float zPos = 0f;
+
             if (movementDirection.x == 1 || movementDirection.x == -1)
             {
-                xPos = transform.localPosition.x;
+                xPos = 0;
             }
             else if (movementDirection.z == 1 || movementDirection.z == -1)
             {
-                zPos = transform.localPosition.z;
+                zPos = 0;
             }
 
-            Vector3 endPosition = new Vector3(xPos, transform.localPosition.y, zPos);
-            transform.localPosition = Vector3.Lerp(transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
+            MoveChild(xPos,zPos);
         }
         if (position == Position.Left)
         {
-            Vector3 endPosition = new Vector3(transform.localPosition.x * movementDirection.x - playerMovementDistance * movementDirection.z, transform.localPosition.y, transform.localPosition.z * movementDirection.z + playerMovementDistance * movementDirection.x);
-            transform.localPosition = Vector3.Lerp(transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
+            MoveChild(- playerMovementDistance * movementDirection.z, playerMovementDistance * movementDirection.x);
         }
         else if (position == Position.Right)
         {
-            Vector3 endPosition = new Vector3(transform.localPosition.x * movementDirection.x + playerMovementDistance * movementDirection.z, transform.localPosition.y, transform.localPosition.z * movementDirection.z - playerMovementDistance * movementDirection.x);
-            transform.localPosition = Vector3.Lerp(transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
+            MoveChild(playerMovementDistance * movementDirection.z, -playerMovementDistance * movementDirection.x);
+        }
+    }
+    private void MoveChild(float xChange,float zChange)
+    {
+        foreach (Transform child in transform)
+        {
+            foreach(Transform grandChild in child)
+            {
+                if (grandChild.gameObject.tag == "Body")
+                {
+                    Vector3 endPosition = new Vector3(xChange+futurePosition.x*(xChange*3/4), grandChild.transform.localPosition.y, zChange + futurePosition.z * (zChange * 3 / 4));
+                    grandChild.transform.localPosition = Vector3.Lerp(grandChild.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
+                }
+            }
         }
     }
     IEnumerator JumpRoutine(float verticalValue)
