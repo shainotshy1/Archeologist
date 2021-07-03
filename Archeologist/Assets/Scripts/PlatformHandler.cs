@@ -14,7 +14,7 @@ public class PlatformHandler : MonoBehaviour
     System.Random random = new System.Random();
     void Start()
     {
-        if(PlayerControls.playerMovementDistance == 0) PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.z / 2.1f;
+        if(PlayerControls.playerMovementDistance == 0 && GetComponent<BoxCollider>()!=null) PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.z / 2.1f;
     }
     private void Update()
     {
