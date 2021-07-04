@@ -8,12 +8,13 @@ public class Pickups : MonoBehaviour
     [SerializeField] float period;
     [SerializeField] float amplitude;
     [SerializeField] float boxColliderHeight;
+    [SerializeField] float rotationSpeed;
     private void Update()
     {
         if(GetComponent<Rigidbody>() == null)
         {
             gameObject.AddComponent<BoxCollider>();
-            gameObject.GetComponent<BoxCollider>().size = new Vector3(5, 5, 5);
+            gameObject.GetComponent<BoxCollider>().size = new Vector3(5, 7, 5);
             gameObject.GetComponent<BoxCollider>().center = new Vector3(0, boxColliderHeight, 0);
 
             gameObject.AddComponent<Rigidbody>();
@@ -30,8 +31,10 @@ public class Pickups : MonoBehaviour
 
         if (Mathf.Abs(yChange) >= Mathf.Epsilon)
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, yChange, transform.localPosition.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y+yChange, transform.position.z);
         }
+
+        transform.Rotate(new Vector3(0, 1, 0), Time.deltaTime * rotationSpeed);
     }
 
     public void SetXPosition(float xPos) 
