@@ -129,10 +129,10 @@ public class PathHandler : MonoBehaviour
             {
                 if (child.gameObject.tag == "Player")
                 {
-                    child.transform.localPosition = new Vector3(-newPosVal*Mathf.Abs(nextDirection.x), child.transform.localPosition.y, -newPosVal* Mathf.Abs(nextDirection.z));
+                    child.transform.localPosition = new Vector3( - newPosVal * currentDirection.z, child.transform.localPosition.y, - newPosVal * currentDirection.x);
                 }
             }
-            playerTransform.localPosition = new Vector3(newPosVal* Mathf.Abs(nextDirection.x), playerTransform.localPosition.y, newPosVal* Mathf.Abs(nextDirection.z));
+            playerTransform.localPosition = new Vector3( newPosVal*currentDirection.z, playerTransform.localPosition.y, newPosVal *currentDirection.x);
         }
     }
 
@@ -173,18 +173,21 @@ public class PathHandler : MonoBehaviour
             int randomVal = (int)(random.NextDouble() * 100);
             GameObject pathType;
             TurnType turnType;
+            float turnFactor = 0f;
 
             if (randomVal < 6 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
                 pathType = leftTurn;
                 turnType = TurnType.Left;
                 platformsSinceLastTurn = 0;
+                turnFactor = 1f;
             }
             else if (randomVal < 12 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
                 pathType = rightTurn;
                 turnType = TurnType.Right;
                 platformsSinceLastTurn = 0;
+                turnFactor = 1f;
             }
             /*else if (randomVal < 9 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
@@ -204,7 +207,7 @@ public class PathHandler : MonoBehaviour
 
             addedPath.transform.localPosition = newPosition;
             addedPath.GetComponent<PlatformHandler>().turnType = turnType;
-            addedPath.transform.rotation = Quaternion.Euler(0, nextDirection.x*90, 0);
+            addedPath.transform.rotation = Quaternion.Euler(0, playerTransform.eulerAngles.y*turnFactor+nextDirection.x*90*(turnFactor-1), 0);
             if(turnType == TurnType.Straight)
             {
                 addedPath.GetComponent<PlatformHandler>().GenerateObstacle(transform.eulerAngles.y);
