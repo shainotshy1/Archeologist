@@ -374,6 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   period: 0.3
   amplitude: 0.1
+  boxColliderHeight: 5
 --- !u!114 &8876677945513502343
 MonoBehaviour:
   m_ObjectHideFlags: 0

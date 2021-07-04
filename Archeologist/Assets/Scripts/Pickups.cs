@@ -7,6 +7,7 @@ public class Pickups : MonoBehaviour
 {
     [SerializeField] float period;
     [SerializeField] float amplitude;
+    [SerializeField] float boxColliderHeight;
     private void Update()
     {
         if(transform.localPosition.z <= PathHandler.pathSeperatorDistance/2)
@@ -14,7 +15,8 @@ public class Pickups : MonoBehaviour
             if (GetComponent<Rigidbody>() == null)
             {
                 gameObject.AddComponent<BoxCollider>();
-                gameObject.GetComponent<BoxCollider>().size = new Vector3(3, 3, 3);
+                gameObject.GetComponent<BoxCollider>().size = new Vector3(5, 5, 5);
+                gameObject.GetComponent<BoxCollider>().center = new Vector3(0, boxColliderHeight, 0);
 
                 gameObject.AddComponent<Rigidbody>();
                 gameObject.GetComponent<Rigidbody>().useGravity = false;
