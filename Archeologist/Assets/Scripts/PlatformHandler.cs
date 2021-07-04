@@ -35,7 +35,7 @@ public class PlatformHandler : MonoBehaviour
             Vector3 obstaclePosition = new Vector3(transform.position.x, 0, transform.position.z);
             int index = (int)(random.NextDouble() * obstacles.Count);
             GameObject newObstacle = Instantiate(obstacles[index], obstaclePosition, Quaternion.Euler(0,angleY,0), transform);
-            newObstacle.GetComponent<ObstacleHandler>().SetXPosition(obstaclePlacement);
+            newObstacle.GetComponent<Pickups>().SetXPosition(obstaclePlacement);
         }
     }
 }

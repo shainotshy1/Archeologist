@@ -148,10 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20089131c6986484ab073a49d3d24626, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obstacles:
-  - {fileID: 5623283906151668170, guid: 13f36315117d71b44a78a7805db1982b, type: 3}
-  - {fileID: 7175414335155321399, guid: 6696d127f3c5be8429319c60b9bd4317, type: 3}
-  - {fileID: 7175414335155321399, guid: 39069849061e4ac4ba04d203a801860a, type: 3}
+  obstacles: []
   turnType: 0
 --- !u!114 &8526299857909433333
 MonoBehaviour:
