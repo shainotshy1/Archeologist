@@ -10,18 +10,15 @@ public class Pickups : MonoBehaviour
     [SerializeField] float boxColliderHeight;
     private void Update()
     {
-        if(transform.localPosition.z <= PathHandler.pathSeperatorDistance/2)
+        if(GetComponent<Rigidbody>() == null)
         {
-            if (GetComponent<Rigidbody>() == null)
-            {
-                gameObject.AddComponent<BoxCollider>();
-                gameObject.GetComponent<BoxCollider>().size = new Vector3(5, 5, 5);
-                gameObject.GetComponent<BoxCollider>().center = new Vector3(0, boxColliderHeight, 0);
+            gameObject.AddComponent<BoxCollider>();
+            gameObject.GetComponent<BoxCollider>().size = new Vector3(5, 5, 5);
+            gameObject.GetComponent<BoxCollider>().center = new Vector3(0, boxColliderHeight, 0);
 
-                gameObject.AddComponent<Rigidbody>();
-                gameObject.GetComponent<Rigidbody>().useGravity = false;
-                gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-            }
+            gameObject.AddComponent<Rigidbody>();
+            gameObject.GetComponent<Rigidbody>().useGravity = false;
+            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
         }
 
         PickupBob();
@@ -33,7 +30,7 @@ public class Pickups : MonoBehaviour
 
         if (Mathf.Abs(yChange) >= Mathf.Epsilon)
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + yChange, transform.localPosition.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, yChange, transform.localPosition.z);
         }
     }
 

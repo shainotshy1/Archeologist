@@ -210,7 +210,7 @@ public class PathHandler : MonoBehaviour
             addedPath.transform.rotation = Quaternion.Euler(0, playerTransform.eulerAngles.y*turnFactor+nextDirection.x*90*(turnFactor-1), 0);
             if(turnType == TurnType.Straight)
             {
-                addedPath.GetComponent<PlatformHandler>().GenerateObstacle(transform.eulerAngles.y);
+                addedPath.GetComponent<PlatformHandler>().GenerateObstacle(playerTransform.eulerAngles.y * turnFactor + nextDirection.x * 90 * (turnFactor - 1));
             }
             addedPath.SetActive(false);
             platforms.Add(addedPath);

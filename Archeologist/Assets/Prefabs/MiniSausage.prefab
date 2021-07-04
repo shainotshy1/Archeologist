@@ -372,8 +372,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c57085d439c798947a8d224edb72863c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  period: 0.3
-  amplitude: 0.1
+  period: 1
+  amplitude: 2
   boxColliderHeight: 5
 --- !u!114 &8876677945513502343
 MonoBehaviour:

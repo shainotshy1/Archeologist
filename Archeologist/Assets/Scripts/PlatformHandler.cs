@@ -32,7 +32,7 @@ public class PlatformHandler : MonoBehaviour
         if (obstacles.Count > 0)
         {
             float obstaclePlacement = ((int)(random.NextDouble() * 3) - 1) * PlayerControls.playerMovementDistance;
-            Vector3 obstaclePosition = new Vector3(transform.position.x, 0, transform.position.z);
+            Vector3 obstaclePosition = new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
             int index = (int)(random.NextDouble() * obstacles.Count);
             GameObject newObstacle = Instantiate(obstacles[index], obstaclePosition, Quaternion.Euler(0,angleY,0), transform);
             newObstacle.GetComponent<Pickups>().SetXPosition(obstaclePlacement);
