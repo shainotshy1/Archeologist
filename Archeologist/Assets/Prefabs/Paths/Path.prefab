@@ -677,6 +677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacles:
   - {fileID: 6230997815490581512, guid: 366630fec88e5c440900b4e37745bf3d, type: 3}
+  - {fileID: 155108327705234514, guid: 18166bae9fe4b934f90d951a92bd91b7, type: 3}
   turnType: 0
 --- !u!65 &7024123876925480666
 BoxCollider:

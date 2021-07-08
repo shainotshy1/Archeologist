@@ -22,6 +22,7 @@ public class PathHandler : MonoBehaviour
     Vector3 currentDirection;
     Vector3 nextDirection;
     Vector3 nextPlatformPositioning;
+    Vector3 playerPosition;
     List<GameObject> platforms = new List<GameObject>();
     System.Random random = new System.Random();
     float targetAngle;
@@ -40,6 +41,7 @@ public class PathHandler : MonoBehaviour
         currentDirection = Vector3.forward;
         nextDirection = currentDirection;
         playerTransform = FindObjectOfType<PlayerControls>().GetComponent<Transform>();
+        playerPosition = playerTransform.position;
         currentSpeed = movementSpeed;
         targetAngle = currentAngle = 0f;
         BoxCollider boxCollider = straightPath.GetComponent<BoxCollider>();
@@ -87,55 +89,44 @@ public class PathHandler : MonoBehaviour
         }
         if (currentSpeed == 0)
         {
+            float newPosVal = (currentTurnType == TurnType.Right) ? rotationRadius : -rotationRadius;
+
             if (!directionSet)
             {
                 targetAngle = (currentTurnType == TurnType.Left) ? currentAngle - 90f : currentAngle + 90f;
-                ChangePlayerRotationAxis(currentTurnType);
+                playerPosition = playerTransform.position;
                 directionSet = true;
             }
             if ((currentTurnType == TurnType.Left && currentAngle > targetAngle)|| (currentTurnType == TurnType.Right && currentAngle < targetAngle))
             {
                 float angleChange = Time.deltaTime * movementSpeed*180/(Mathf.PI*rotationRadius)*(targetAngle-currentAngle)/Mathf.Abs(targetAngle-currentAngle);
                 currentAngle += angleChange;
-                playerTransform.Rotate(new Vector3(0, 1, 0), angleChange);
+                RotatePlayer(angleChange, newPosVal);
+                
             }
             else
             {
+                RotatePlayer(targetAngle - currentAngle, newPosVal);
                 currentDirection = nextDirection;
                 currentAngle = targetAngle;
                 currentSpeed = movementSpeed;
                 nextPlatformPositioning = Vector3.zero;
+                PathAlignWithPlayer();
             }
         }
     }
-
-    private void ChangePlayerRotationAxis(TurnType turn)
+    private void RotatePlayer(float angle,float newPosVal)
     {
-        if(turn == TurnType.Straight)
-        {
-            foreach (Transform child in playerTransform)
-            {
-                if (child.gameObject.tag == "Player")
-                {
-                    child.transform.localPosition = new Vector3(0, child.transform.localPosition.y, child.transform.localPosition.z);
-                }
-            }
-            playerTransform.localPosition = new Vector3(0, playerTransform.localPosition.y, playerTransform.localPosition.z);
-        }
-        else
-        {
-            float newPosVal = (turn == TurnType.Right) ? rotationRadius : -rotationRadius;
-            foreach (Transform child in playerTransform)
-            {
-                if (child.gameObject.tag == "Player")
-                {
-                    child.transform.localPosition = new Vector3( - newPosVal * currentDirection.z, child.transform.localPosition.y, - newPosVal * currentDirection.x);
-                }
-            }
-            playerTransform.localPosition = new Vector3( newPosVal*currentDirection.z, playerTransform.localPosition.y, newPosVal *currentDirection.x);
-        }
+        playerTransform.RotateAround(new Vector3(playerPosition.x + newPosVal * currentDirection.z, 0, playerPosition.z - newPosVal * currentDirection.x), Vector3.up, angle);
     }
+    private void PathAlignWithPlayer()
+    {
+        float y = transform.position.y;
+        float x = transform.position.x + (playerTransform.position.x - platforms[platforms.Count - 1].transform.position.x) * Mathf.Abs(currentDirection.z);
+        float z = transform.position.z + (playerTransform.position.z - platforms[platforms.Count - 1].transform.position.z) * Mathf.Abs(currentDirection.x);
 
+        transform.position = new Vector3(x, y, z);
+    }
     private void MovePaths()
     {
         float xChange = -Time.deltaTime * currentSpeed * currentDirection.x;
@@ -165,7 +156,7 @@ public class PathHandler : MonoBehaviour
     private void CreatePath()
     {
         float distance = PathPlayerDistance(0);
-        if (distance>pathsInBackAmount*pathSeperatorDistance&&currentSpeed!=0)
+        if (distance>pathsInBackAmount*pathSeperatorDistance&&currentSpeed!=0&&PathPlayerDistance(1) > 0)
         {
             platforms[0].GetComponent<PlatformHandler>().RemovePlatform();
             platforms.RemoveAt(0);
@@ -202,13 +193,19 @@ public class PathHandler : MonoBehaviour
                 platformsSinceLastTurn++;
             }
 
-            Vector3 newPosition = new Vector3(pathSeperatorDistance*nextDirection.x + platforms[platforms.Count - 1].transform.localPosition.x + _turnPlatformShift * nextPlatformPositioning.x, 0, pathSeperatorDistance*nextDirection.z + platforms[platforms.Count - 1].transform.localPosition.z + _turnPlatformShift * nextPlatformPositioning.z);
-            GameObject addedPath = Instantiate(pathType, Vector3.zero, Quaternion.identity, transform);
+            float xShift = _turnPlatformShift * nextPlatformPositioning.x;
+            float zShift = _turnPlatformShift * nextPlatformPositioning.z;
 
+            float newX = pathSeperatorDistance * nextDirection.x + platforms[platforms.Count - 1].transform.localPosition.x + xShift;
+            float newZ = pathSeperatorDistance * nextDirection.z + platforms[platforms.Count - 1].transform.localPosition.z + zShift;
+
+            Vector3 newPosition = new Vector3(newX, 0, newZ);
+
+            GameObject addedPath = Instantiate(pathType, Vector3.zero, Quaternion.identity, transform);
             addedPath.transform.localPosition = newPosition;
             addedPath.GetComponent<PlatformHandler>().turnType = turnType;
-            addedPath.transform.rotation = Quaternion.Euler(0, playerTransform.eulerAngles.y*turnFactor+nextDirection.x*90*(turnFactor-1), 0);
-            if(turnType == TurnType.Straight)
+            addedPath.transform.rotation = Quaternion.Euler(0, playerTransform.eulerAngles.y*turnFactor+nextDirection.x*90*(1-turnFactor), 0);
+            if(turnType == TurnType.Straight&&random.NextDouble()*10>5)
             {
                 addedPath.GetComponent<PlatformHandler>().GenerateObstacle(playerTransform.eulerAngles.y * turnFactor + nextDirection.x * 90 * (turnFactor - 1));
             }
@@ -239,9 +236,7 @@ public class PathHandler : MonoBehaviour
                 nextDirection = Vector3.right;
             }
 
-            nextPlatformPositioning = currentDirection + nextDirection;
-
-            _turnPlatformShift = rotationRadius;
+            SetTurnPositiong();
         }
         else if(turn == TurnType.Right)
         {
@@ -262,13 +257,20 @@ public class PathHandler : MonoBehaviour
                 nextDirection = Vector3.left;
             }
 
-            nextPlatformPositioning = currentDirection + nextDirection;
-
-            _turnPlatformShift = rotationRadius;
+            SetTurnPositiong();
         }
         else
         {
+            nextPlatformPositioning = Vector3.zero;
+
             _turnPlatformShift = 0f;
         }
+    }
+
+    private void SetTurnPositiong()
+    {
+        nextPlatformPositioning = currentDirection + nextDirection;
+
+        _turnPlatformShift = rotationRadius;
     }
 }
