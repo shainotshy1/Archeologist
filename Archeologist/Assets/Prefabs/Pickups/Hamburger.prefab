@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   period: 0.3
   amplitude: 0.1
-  boxColliderHeight: 5
+  boxColliderHeight: 6
   rotationSpeed: 50
 --- !u!114 &4833567501696286268
 MonoBehaviour:
@@ -74,15 +74,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6b952b04b26b36a41b9cc4436f756b73, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6b952b04b26b36a41b9cc4436f756b73, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6b952b04b26b36a41b9cc4436f756b73, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6b952b04b26b36a41b9cc4436f756b73, type: 3}
       propertyPath: m_LocalPosition.x
@@ -90,7 +90,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6b952b04b26b36a41b9cc4436f756b73, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6b952b04b26b36a41b9cc4436f756b73, type: 3}
       propertyPath: m_LocalPosition.z

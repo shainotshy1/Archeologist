@@ -9,17 +9,16 @@ public class Pickups : MonoBehaviour
     [SerializeField] float amplitude;
     [SerializeField] float boxColliderHeight;
     [SerializeField] float rotationSpeed;
+    private void Start()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y + boxColliderHeight, transform.position.z);
+    }
     private void Update()
     {
-        if(GetComponent<Rigidbody>() == null)
+        if(GetComponent<BoxCollider>() == null)
         {
             gameObject.AddComponent<BoxCollider>();
-            gameObject.GetComponent<BoxCollider>().size = new Vector3(5, 7, 5);
-            gameObject.GetComponent<BoxCollider>().center = new Vector3(0, boxColliderHeight, 0);
-
-            gameObject.AddComponent<Rigidbody>();
-            gameObject.GetComponent<Rigidbody>().useGravity = false;
-            gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            gameObject.GetComponent<BoxCollider>().size = new Vector3(0.5f, boxColliderHeight, 0.5f);
         }
 
         PickupBob();
@@ -32,6 +31,7 @@ public class Pickups : MonoBehaviour
         if (Mathf.Abs(yChange) >= Mathf.Epsilon)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y+yChange, transform.position.z);
+            gameObject.GetComponent<BoxCollider>().center = new Vector3(0, gameObject.GetComponent<BoxCollider>().center.x-yChange, 0);
         }
 
         transform.Rotate(new Vector3(0, 1, 0), Time.deltaTime * rotationSpeed);
@@ -40,5 +40,12 @@ public class Pickups : MonoBehaviour
     public void SetXPosition(float xPos) 
     {
         transform.localPosition = new Vector3(xPos, 0, 0);
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Player")
+        {
+            Destroy(gameObject);
+        }
     }
 }

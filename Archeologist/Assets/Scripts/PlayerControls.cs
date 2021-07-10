@@ -6,11 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControls : MonoBehaviour
 {
-    [SerializeField] float jumpForce;
+    [SerializeField] float jumpHeight;
+    [SerializeField] float jumpSpeed;
+    [SerializeField] float jumpPeakRatio;
     [SerializeField] InputAction movement;
     [SerializeField] InputAction jump;
     [SerializeField] float horizontalSpeed;
-    [SerializeField] bool enableCollisions;
+    [SerializeField] bool _collisionsEnabled;
 
     public static float playerMovementDistance = 0f;
     public static bool collisionsEnabled;
@@ -20,14 +22,28 @@ public class PlayerControls : MonoBehaviour
         Left, Middle, Right,Idle
     }
     Vector3 movementDirection = new Vector3(1, 0, 0);
-    Vector3 futurePosition = new Vector3(0, 0, 0);
     bool isGrounded;
     Position setPosition;
+    Transform bodyTransform;
     Rigidbody rigidBody;
     private void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
         setPosition = Position.Middle;
+        isGrounded = true;
+
+        foreach (Transform child in transform)
+        {
+            foreach (Transform grandChild in child)
+            {
+                if (grandChild.gameObject.tag == "JumpCenter")
+                {
+                    bodyTransform = grandChild;
+                    rigidBody = grandChild.GetComponent<Rigidbody>();
+                }
+            }
+        }
+
+        rigidBody.useGravity = true;
     }
     private void OnEnable()
     {
@@ -39,28 +55,32 @@ public class PlayerControls : MonoBehaviour
         movement.Disable();
         jump.Disable();
     }
-    private void OnCollisionStay(Collision collision)
+    private void CheckGroundedStatus()
     {
-        isGrounded = true;
+        if (PlayerCollisionHandler.playerGrounded)
+        {
+            isGrounded = true;
+            rigidBody.useGravity = true;
+        }
     }
     private void ProcessInput()
     {
-        float verticalValue = (jump.ReadValue<float>() > 0.5) ? jumpForce : 0;
+        float verticalValue = (jump.ReadValue<float>() > 0.5) ? jumpHeight : 0;
 
         if (Mathf.Abs(verticalValue) > Mathf.Epsilon && isGrounded)
         {
-            //StartCoroutine(JumpRoutine(verticalValue));
+            rigidBody.useGravity = false;
+            isGrounded = false;
+            StartCoroutine(PlayerJump());
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
         {
             if (setPosition == Position.Middle)
             {
-                futurePosition = new Vector3(0, 0, -1);
                 setPosition = Position.Left;
             }
             else if (setPosition == Position.Right)
             {
-                futurePosition = new Vector3(0, 0, 0);
                 setPosition = Position.Middle;
             }
         }
@@ -68,12 +88,10 @@ public class PlayerControls : MonoBehaviour
         {
             if (setPosition == Position.Middle)
             {
-                futurePosition = new Vector3(0, 0, 1);
                 setPosition = Position.Right;
             }
             if (setPosition == Position.Left)
             {
-                futurePosition = new Vector3(0, 0, 0);
                 setPosition = Position.Middle;
             }
         }
@@ -109,30 +127,25 @@ public class PlayerControls : MonoBehaviour
     }
     private void MoveChild(float newX,float newZ)
     {
-        foreach (Transform child in transform)
-        {
-            foreach(Transform grandChild in child)
-            {
-                if (grandChild.gameObject.tag == "Body")
-                {
-                    Vector3 endPosition = new Vector3(newX, grandChild.transform.localPosition.y, newZ);
-                    grandChild.transform.localPosition = Vector3.Lerp(grandChild.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
-                }
-            }
-        }
-    }
-    IEnumerator JumpRoutine(float verticalValue)
-    {
-        rigidBody.ResetInertiaTensor();
-        rigidBody.ResetCenterOfMass();
-        rigidBody.AddRelativeForce(0, verticalValue * Time.deltaTime, 0, ForceMode.Impulse);
-        yield return new WaitForSeconds(0.1f);
-        isGrounded = false;
-    }
 
+        Vector3 endPosition = new Vector3(newX, bodyTransform.transform.localPosition.y, newZ);
+        bodyTransform.transform.localPosition = Vector3.Lerp(bodyTransform.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
+
+    }
+    IEnumerator PlayerJump()
+    {
+        while(bodyTransform.position.y < jumpHeight * jumpPeakRatio)
+        {
+            Vector3 newPos = new Vector3(bodyTransform.position.x, jumpHeight, bodyTransform.position.z);
+            bodyTransform.position = Vector3.Lerp(bodyTransform.position, newPos, Time.deltaTime * jumpSpeed);
+            yield return new WaitForEndOfFrame();
+        }
+        rigidBody.useGravity = true;
+    }
     void Update()
     {
-        collisionsEnabled = enableCollisions;
+        collisionsEnabled = _collisionsEnabled;
+        CheckGroundedStatus();
         ProcessInput();
         if (transform.localPosition.y < -10)
         {
