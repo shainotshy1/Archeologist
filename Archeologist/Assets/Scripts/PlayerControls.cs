@@ -6,16 +6,14 @@ using UnityEngine.SceneManagement;
 
 public class PlayerControls : MonoBehaviour
 {
-    [SerializeField] float jumpHeight;
-    [SerializeField] float jumpSpeed;
-    [SerializeField] float jumpPeakRatio;
-    [SerializeField] InputAction movement;
-    [SerializeField] InputAction jump;
-    [SerializeField] float horizontalSpeed;
-    [SerializeField] bool _collisionsEnabled;
-
     public static float playerMovementDistance = 0f;
     public static bool collisionsEnabled;
+
+    [SerializeField] float initalJumpHeight;
+    [SerializeField] InputAction movement;
+    [SerializeField] float horizontalSpeed;
+    [SerializeField] bool _collisionsEnabled;
+    [SerializeField] float gravity;
 
     enum Position
     {
@@ -23,6 +21,8 @@ public class PlayerControls : MonoBehaviour
     }
     Vector3 movementDirection = new Vector3(1, 0, 0);
     bool isGrounded;
+    float yDelta = 0f;
+    float idleHeight;
     Position setPosition;
     Transform bodyTransform;
     Rigidbody rigidBody;
@@ -43,34 +43,31 @@ public class PlayerControls : MonoBehaviour
             }
         }
 
+        idleHeight = bodyTransform.position.y;
         rigidBody.useGravity = true;
     }
     private void OnEnable()
     {
         movement.Enable();
-        jump.Enable();
     }
     private void OnDisable()
     {
         movement.Disable();
-        jump.Disable();
     }
     private void CheckGroundedStatus()
     {
         if (PlayerCollisionHandler.playerGrounded)
         {
             isGrounded = true;
+            yDelta = 0;
             rigidBody.useGravity = true;
         }
     }
     private void ProcessInput()
     {
-        float verticalValue = (jump.ReadValue<float>() > 0.5) ? jumpHeight : 0;
 
-        if (Mathf.Abs(verticalValue) > Mathf.Epsilon && isGrounded)
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
-            rigidBody.useGravity = false;
-            isGrounded = false;
             StartCoroutine(PlayerJump());
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
@@ -127,25 +124,35 @@ public class PlayerControls : MonoBehaviour
     }
     private void MoveChild(float newX,float newZ)
     {
-
         Vector3 endPosition = new Vector3(newX, bodyTransform.transform.localPosition.y, newZ);
         bodyTransform.transform.localPosition = Vector3.Lerp(bodyTransform.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
-
     }
     IEnumerator PlayerJump()
     {
-        while(bodyTransform.position.y < jumpHeight * jumpPeakRatio)
+        rigidBody.useGravity = false;
+        isGrounded = false;
+        yDelta = initalJumpHeight;
+
+        while (!isGrounded)
         {
-            Vector3 newPos = new Vector3(bodyTransform.position.x, jumpHeight, bodyTransform.position.z);
-            bodyTransform.position = Vector3.Lerp(bodyTransform.position, newPos, Time.deltaTime * jumpSpeed);
+            Vector3 newPos = new Vector3(bodyTransform.position.x, bodyTransform.position.y + yDelta, bodyTransform.position.z);
+            bodyTransform.position = newPos;
+
+            if (!isGrounded && !rigidBody.useGravity&&bodyTransform.position.y>idleHeight)
+            {
+                yDelta -= gravity * Time.deltaTime;
+            }
+            else
+            {
+                yDelta = 0;
+            }
+            CheckGroundedStatus();
             yield return new WaitForEndOfFrame();
         }
-        rigidBody.useGravity = true;
     }
     void Update()
     {
         collisionsEnabled = _collisionsEnabled;
-        CheckGroundedStatus();
         ProcessInput();
         if (transform.localPosition.y < -10)
         {
