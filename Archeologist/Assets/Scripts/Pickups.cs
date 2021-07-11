@@ -43,7 +43,7 @@ public class Pickups : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if(collision.gameObject.tag != "Ground")
         {
             Destroy(gameObject);
         }

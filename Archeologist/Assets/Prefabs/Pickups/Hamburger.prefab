@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6189675223867696095}
   - component: {fileID: 5936087477928469031}
-  - component: {fileID: 4833567501696286268}
   m_Layer: 0
   m_Name: Hamburger
   m_TagString: Untagged
@@ -49,18 +48,6 @@ MonoBehaviour:
   amplitude: 0.1
   boxColliderHeight: 6
   rotationSpeed: 50
---- !u!114 &4833567501696286268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 155108327705234514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36aeda6ea5506b641adf73acb36ee1e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &2626619464737648122
 PrefabInstance:
   m_ObjectHideFlags: 0

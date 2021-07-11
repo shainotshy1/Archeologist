@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCollisionHandler : MonoBehaviour
 {
-    public static bool playerGrounded = true;
+    [HideInInspector] public bool playerGrounded = true;
     private void OnCollisionStay(Collision collision)
     {
         playerGrounded = collision.gameObject.tag == "Ground";

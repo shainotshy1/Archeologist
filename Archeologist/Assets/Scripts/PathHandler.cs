@@ -180,7 +180,7 @@ public class PathHandler : MonoBehaviour
                 platformsSinceLastTurn = 0;
                 turnFactor = 1f;
             }
-            /*else if (randomVal < 9 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
+            /*else if (randomVal < 18 && platformsSinceLastTurn >= minPlatformsBetweenTurns)
             {
                 pathType = forkPath;
                 turnType = TurnType.Fork;

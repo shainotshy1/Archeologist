@@ -7,29 +7,23 @@ using UnityEngine.SceneManagement;
 public class PlayerControls : MonoBehaviour
 {
     public static float playerMovementDistance = 0f;
-    public static bool collisionsEnabled;
 
-    [SerializeField] float initalJumpHeight;
-    [SerializeField] InputAction movement;
+    [SerializeField] float jumpInitialVelocity;
     [SerializeField] float horizontalSpeed;
-    [SerializeField] bool _collisionsEnabled;
-    [SerializeField] float gravity;
+    [SerializeField] InputAction movement;
 
     enum Position
     {
-        Left, Middle, Right,Idle
+        Left, Middle, Right, Idle
     }
-    Vector3 movementDirection = new Vector3(1, 0, 0);
     bool isGrounded;
-    float yDelta = 0f;
-    float idleHeight;
+    Vector3 movementDirection = new Vector3(1, 0, 0);
     Position setPosition;
     Transform bodyTransform;
     Rigidbody rigidBody;
     private void Start()
     {
         setPosition = Position.Middle;
-        isGrounded = true;
 
         foreach (Transform child in transform)
         {
@@ -42,8 +36,6 @@ public class PlayerControls : MonoBehaviour
                 }
             }
         }
-
-        idleHeight = bodyTransform.position.y;
         rigidBody.useGravity = true;
     }
     private void OnEnable()
@@ -54,21 +46,12 @@ public class PlayerControls : MonoBehaviour
     {
         movement.Disable();
     }
-    private void CheckGroundedStatus()
-    {
-        if (PlayerCollisionHandler.playerGrounded)
-        {
-            isGrounded = true;
-            yDelta = 0;
-            rigidBody.useGravity = true;
-        }
-    }
     private void ProcessInput()
     {
 
         if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
-            StartCoroutine(PlayerJump());
+            rigidBody.velocity = Vector3.up*jumpInitialVelocity;
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
         {
@@ -127,37 +110,15 @@ public class PlayerControls : MonoBehaviour
         Vector3 endPosition = new Vector3(newX, bodyTransform.transform.localPosition.y, newZ);
         bodyTransform.transform.localPosition = Vector3.Lerp(bodyTransform.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
     }
-    IEnumerator PlayerJump()
-    {
-        rigidBody.useGravity = false;
-        isGrounded = false;
-        yDelta = initalJumpHeight;
-
-        while (!isGrounded)
-        {
-            Vector3 newPos = new Vector3(bodyTransform.position.x, bodyTransform.position.y + yDelta, bodyTransform.position.z);
-            bodyTransform.position = newPos;
-
-            if (!isGrounded && !rigidBody.useGravity&&bodyTransform.position.y>idleHeight)
-            {
-                yDelta -= gravity * Time.deltaTime;
-            }
-            else
-            {
-                yDelta = 0;
-            }
-            CheckGroundedStatus();
-            yield return new WaitForEndOfFrame();
-        }
-    }
     void Update()
     {
-        collisionsEnabled = _collisionsEnabled;
-        ProcessInput();
+        isGrounded = rigidBody.GetComponent<PlayerCollisionHandler>().playerGrounded;
         if (transform.localPosition.y < -10)
         {
             int index = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadScene(index);
         }
+
+        ProcessInput();
     }
 }

@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 4718613060613262884}
   - component: {fileID: 4110524567611467286}
   - component: {fileID: 2769011598797360939}
-  - component: {fileID: 5132083994670824952}
   m_Layer: 0
   m_Name: ForkPath
   m_TagString: Untagged
@@ -103,18 +102,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacles: []
   turnType: 0
---- !u!114 &5132083994670824952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 649898768328779230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a8eb737b5564fd4888e607cb13bea12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &771423443241470873
 GameObject:
   m_ObjectHideFlags: 0

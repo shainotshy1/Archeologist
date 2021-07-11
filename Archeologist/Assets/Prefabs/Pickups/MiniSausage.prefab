@@ -337,7 +337,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8288088287636983093}
   - component: {fileID: 186444815843407132}
-  - component: {fileID: 8876677945513502343}
   m_Layer: 0
   m_Name: MiniSausage
   m_TagString: Untagged
@@ -376,18 +375,6 @@ MonoBehaviour:
   amplitude: 0.1
   boxColliderHeight: 6.3
   rotationSpeed: 180
---- !u!114 &8876677945513502343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6230997815490581512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36aeda6ea5506b641adf73acb36ee1e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6548276037217211215
 GameObject:
   m_ObjectHideFlags: 0

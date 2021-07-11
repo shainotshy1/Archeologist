@@ -105,7 +105,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4718613060613262884}
   - component: {fileID: 5522449521310506445}
-  - component: {fileID: 8526299857909433333}
   - component: {fileID: 6250178996543782611}
   m_Layer: 0
   m_Name: RightTurn
@@ -150,18 +149,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacles: []
   turnType: 0
---- !u!114 &8526299857909433333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 649898768328779230}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a8eb737b5564fd4888e607cb13bea12, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!65 &6250178996543782611
 BoxCollider:
   m_ObjectHideFlags: 0
