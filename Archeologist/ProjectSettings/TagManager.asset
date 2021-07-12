@@ -8,6 +8,9 @@ TagManager:
   - Railing
   - Body
   - JumpCenter
+  - Obstacle
+  - Pickup
+  - Score
   layers:
   - Default
   - TransparentFX

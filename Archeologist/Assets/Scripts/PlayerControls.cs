@@ -110,13 +110,18 @@ public class PlayerControls : MonoBehaviour
         Vector3 endPosition = new Vector3(newX, bodyTransform.transform.localPosition.y, newZ);
         bodyTransform.transform.localPosition = Vector3.Lerp(bodyTransform.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
     }
+    public IEnumerator ReloadScene()
+    {
+        yield return new WaitForEndOfFrame();//temporary till end sequence is added
+        int index = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(index);
+    }
     void Update()
     {
         isGrounded = rigidBody.GetComponent<PlayerCollisionHandler>().playerGrounded;
         if (transform.localPosition.y < -10)
         {
-            int index = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadScene(index);
+            StartCoroutine(ReloadScene());
         }
 
         ProcessInput();

@@ -9,6 +9,7 @@ public class Pickups : MonoBehaviour
     [SerializeField] float amplitude;
     [SerializeField] float boxColliderHeight;
     [SerializeField] float rotationSpeed;
+    [SerializeField] int scoreValue;
     private void Start()
     {
         transform.position = new Vector3(transform.position.x, transform.position.y + boxColliderHeight, transform.position.z);
@@ -18,7 +19,7 @@ public class Pickups : MonoBehaviour
         if(GetComponent<BoxCollider>() == null)
         {
             gameObject.AddComponent<BoxCollider>();
-            gameObject.GetComponent<BoxCollider>().size = new Vector3(0.5f, boxColliderHeight, 0.5f);
+            gameObject.GetComponent<BoxCollider>().size = new Vector3(1f, boxColliderHeight, 1f);
         }
 
         PickupBob();
@@ -30,21 +31,18 @@ public class Pickups : MonoBehaviour
 
         if (Mathf.Abs(yChange) >= Mathf.Epsilon)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y+yChange, transform.position.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y+yChange, transform.localPosition.z);
             gameObject.GetComponent<BoxCollider>().center = new Vector3(0, gameObject.GetComponent<BoxCollider>().center.x-yChange, 0);
         }
 
         transform.Rotate(new Vector3(0, 1, 0), Time.deltaTime * rotationSpeed);
     }
-
-    public void SetXPosition(float xPos) 
-    {
-        transform.localPosition = new Vector3(xPos, 0, 0);
-    }
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag != "Ground")
+        if (collision.gameObject.tag == "JumpCenter")
         {
+            ScoreHandler scoreHandler = new ScoreHandler();
+            scoreHandler.ChangeScore(scoreValue);
             Destroy(gameObject);
         }
     }

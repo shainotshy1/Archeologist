@@ -10,6 +10,9 @@ public class PathHandler : MonoBehaviour
     public static float pathSeperatorDistance;
 
     [SerializeField] float movementSpeed;
+    [SerializeField] float maxSpeed;
+    [SerializeField] float acceleration;
+    [SerializeField] float platformAlignSpeed;
     [SerializeField] GameObject straightPath;
     [SerializeField] GameObject rightTurn;
     [SerializeField] GameObject leftTurn;
@@ -23,6 +26,7 @@ public class PathHandler : MonoBehaviour
     Vector3 nextDirection;
     Vector3 nextPlatformPositioning;
     Vector3 playerPosition;
+    Vector3 alignedPosition;
     List<GameObject> platforms = new List<GameObject>();
     System.Random random = new System.Random();
     float targetAngle;
@@ -39,6 +43,7 @@ public class PathHandler : MonoBehaviour
         directionSet = true;
         nextPlatformPositioning = Vector3.zero;
         currentDirection = Vector3.forward;
+        alignedPosition = Vector3.zero;
         nextDirection = currentDirection;
         playerTransform = FindObjectOfType<PlayerControls>().GetComponent<Transform>();
         playerPosition = playerTransform.position;
@@ -68,10 +73,20 @@ public class PathHandler : MonoBehaviour
         TurnPlayer();
         CreatePath();
         MovePaths();
+        PathAlignWithPlayer();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
+        }
+
+        if (movementSpeed < maxSpeed)
+        {
+            movementSpeed += Time.deltaTime * acceleration;
+        }
+        else
+        {
+            movementSpeed = maxSpeed;
         }
     }
 
@@ -111,7 +126,12 @@ public class PathHandler : MonoBehaviour
                 currentAngle = targetAngle;
                 currentSpeed = movementSpeed;
                 nextPlatformPositioning = Vector3.zero;
-                PathAlignWithPlayer();
+
+                float y = transform.position.y;
+                float x = transform.position.x + (playerTransform.position.x - platforms[platforms.Count - 1].transform.position.x) * Mathf.Abs(currentDirection.z);
+                float z = transform.position.z + (playerTransform.position.z - platforms[platforms.Count - 1].transform.position.z) * Mathf.Abs(currentDirection.x);
+
+                alignedPosition = new Vector3(x, y, z);
             }
         }
     }
@@ -121,11 +141,7 @@ public class PathHandler : MonoBehaviour
     }
     private void PathAlignWithPlayer()
     {
-        float y = transform.position.y;
-        float x = transform.position.x + (playerTransform.position.x - platforms[platforms.Count - 1].transform.position.x) * Mathf.Abs(currentDirection.z);
-        float z = transform.position.z + (playerTransform.position.z - platforms[platforms.Count - 1].transform.position.z) * Mathf.Abs(currentDirection.x);
-
-        transform.position = new Vector3(x, y, z);
+        transform.position = Vector3.Lerp(transform.position,alignedPosition,Time.deltaTime*platformAlignSpeed);
     }
     private void MovePaths()
     {
@@ -205,9 +221,9 @@ public class PathHandler : MonoBehaviour
             addedPath.transform.localPosition = newPosition;
             addedPath.GetComponent<PlatformHandler>().turnType = turnType;
             addedPath.transform.rotation = Quaternion.Euler(0, playerTransform.eulerAngles.y*turnFactor+nextDirection.x*90*(1-turnFactor), 0);
-            if(turnType == TurnType.Straight&&random.NextDouble()*10>5)
+            if(turnType == TurnType.Straight)
             {
-                addedPath.GetComponent<PlatformHandler>().GenerateObstacle(playerTransform.eulerAngles.y * turnFactor + nextDirection.x * 90 * (turnFactor - 1));
+                addedPath.GetComponent<PlatformHandler>().PlaceObjectOnPath(playerTransform.eulerAngles.y * turnFactor + nextDirection.x * 90 * (turnFactor - 1));
             }
             addedPath.SetActive(false);
             platforms.Add(addedPath);

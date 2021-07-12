@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5936087477928469031}
   m_Layer: 0
   m_Name: Hamburger
-  m_TagString: Untagged
+  m_TagString: Pickup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   amplitude: 0.1
   boxColliderHeight: 6
   rotationSpeed: 50
+  scoreValue: 1
 --- !u!1001 &2626619464737648122
 PrefabInstance:
   m_ObjectHideFlags: 0
