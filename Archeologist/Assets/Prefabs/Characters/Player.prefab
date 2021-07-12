@@ -445,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51ac38cd8c83544597d83aabce030ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpInitialVelocity: 70
+  jumpInitialVelocity: 75
   horizontalSpeed: 10
   movement:
     m_Name: Movement
