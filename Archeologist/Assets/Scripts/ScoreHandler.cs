@@ -10,7 +10,7 @@ public class ScoreHandler
     TextMeshProUGUI scoreBoard = GameObject.FindGameObjectWithTag("Score").GetComponent<TextMeshProUGUI>();
     public void ChangeScore(int delta)
     {
-        score += delta/2.0f;
+        score += delta;
     }
     public void ResetScore()
     {

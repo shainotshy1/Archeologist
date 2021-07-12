@@ -2,8 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PathHandler : MonoBehaviour
 {
@@ -33,10 +32,12 @@ public class PathHandler : MonoBehaviour
     float currentAngle;
     float currentSpeed;
     float _turnPlatformShift;
+    public int distance = 0;
     int platformsSinceLastTurn = 0;
     bool directionSet;
     TurnType currentTurnType;
     Transform playerTransform;
+    TextMeshProUGUI distanceBoard;
     private void Start()
     {
         _turnPlatformShift = 0f;
@@ -49,6 +50,9 @@ public class PathHandler : MonoBehaviour
         playerPosition = playerTransform.position;
         currentSpeed = movementSpeed;
         targetAngle = currentAngle = 0f;
+
+        distanceBoard = GameObject.FindGameObjectWithTag("Distance").GetComponent<TextMeshProUGUI>();
+
         BoxCollider boxCollider = straightPath.GetComponent<BoxCollider>();
         if (boxCollider != null)
         {
@@ -74,6 +78,7 @@ public class PathHandler : MonoBehaviour
         CreatePath();
         MovePaths();
         PathAlignWithPlayer();
+        DisplayDistance();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -89,7 +94,10 @@ public class PathHandler : MonoBehaviour
             movementSpeed = maxSpeed;
         }
     }
-
+    private void DisplayDistance()
+    {
+        distanceBoard.text = $"Distance: {distance} m";
+    }
     private void TurnPlayer()
     {
         currentTurnType = platforms[pathsInBackAmount].GetComponent<PlatformHandler>().turnType;
@@ -138,6 +146,7 @@ public class PathHandler : MonoBehaviour
     private void RotatePlayer(float angle,float newPosVal)
     {
         playerTransform.RotateAround(new Vector3(playerPosition.x + newPosVal * currentDirection.z, 0, playerPosition.z - newPosVal * currentDirection.x), Vector3.up, angle);
+        IncreaseDistance();
     }
     private void PathAlignWithPlayer()
     {
@@ -154,11 +163,16 @@ public class PathHandler : MonoBehaviour
             float x = platforms[i].transform.localPosition.x;
             float z = platforms[i].transform.localPosition.z;
 
-            Vector3 newPos = new Vector3(x+xChange, y, z+zChange);
+            Vector3 newPos = new Vector3(x + xChange, y, z + zChange);
             platforms[i].transform.localPosition = newPos;
-            
+
             if (!platforms[i].activeInHierarchy) platforms[i].SetActive(true);
         }
+        IncreaseDistance();
+    }
+    private void IncreaseDistance()
+    {
+        distance += (int)(Time.deltaTime * movementSpeed);
     }
     private float PathPlayerDistance(int pathIndex)
     {

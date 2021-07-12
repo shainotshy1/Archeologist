@@ -11,6 +11,7 @@ TagManager:
   - Obstacle
   - Pickup
   - Score
+  - Distance
   layers:
   - Default
   - TransparentFX

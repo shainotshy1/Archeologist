@@ -662,12 +662,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20089131c6986484ab073a49d3d24626, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnType: 0
   pickups:
-  - {fileID: 155108327705234514, guid: 18166bae9fe4b934f90d951a92bd91b7, type: 3}
   - {fileID: 6230997815490581512, guid: 366630fec88e5c440900b4e37745bf3d, type: 3}
+  - {fileID: 6230997815490581512, guid: 42f17978fb0cbcc478f731923f670526, type: 3}
   obstacles:
   - {fileID: 5316966077733928898, guid: e046b4858442c1d42aa95c0d00c04abc, type: 3}
-  turnType: 0
 --- !u!65 &7024123876925480666
 BoxCollider:
   m_ObjectHideFlags: 0
