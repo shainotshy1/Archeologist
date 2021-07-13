@@ -19,7 +19,7 @@ public class PlatformHandler : MonoBehaviour
     int minPickupsInRow = 5;
     void Start()
     {
-        if(PlayerControls.playerMovementDistance == 0 && GetComponent<BoxCollider>()!=null) PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.z / 2.1f;
+        if(PlayerControls.playerMovementDistance == 0 && GetComponent<BoxCollider>()!=null) PlayerControls.playerMovementDistance = GetComponent<BoxCollider>().size.z / 2f;
     }
     public void RemovePlatform()
     {

@@ -668,6 +668,7 @@ MonoBehaviour:
   - {fileID: 6230997815490581512, guid: 42f17978fb0cbcc478f731923f670526, type: 3}
   obstacles:
   - {fileID: 5316966077733928898, guid: e046b4858442c1d42aa95c0d00c04abc, type: 3}
+  - {fileID: 1612868332842251474, guid: f1b6dcb8bc4c19848899315b9b733045, type: 3}
 --- !u!65 &7024123876925480666
 BoxCollider:
   m_ObjectHideFlags: 0
