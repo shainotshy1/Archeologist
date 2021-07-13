@@ -16,6 +16,10 @@ public class PathHandler : MonoBehaviour
     [SerializeField] GameObject rightTurn;
     [SerializeField] GameObject leftTurn;
     [SerializeField] GameObject forkPath;
+    [SerializeField] List<GameObject> straightBackgrounds;
+    [SerializeField] List<GameObject> rightTurnBackgrounds;
+    [SerializeField] List<GameObject> leftTurnBackgrounds;
+    [SerializeField] List<GameObject> forkBackgrounds;
     [SerializeField] int pathsInfrontAmount;
     [SerializeField] int pathsInBackAmount;
     [SerializeField] int minPlatformsBetweenTurns;
@@ -32,7 +36,7 @@ public class PathHandler : MonoBehaviour
     float currentAngle;
     float currentSpeed;
     float _turnPlatformShift;
-    public int distance = 0;
+    int distance = 0;
     int platformsSinceLastTurn = 0;
     bool directionSet;
     TurnType currentTurnType;

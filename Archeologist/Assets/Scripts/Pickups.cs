@@ -6,14 +6,10 @@ using UnityEngine;
 public class Pickups : MonoBehaviour
 {
     [SerializeField] float period;
-    [SerializeField] float amplitude;
     [SerializeField] float boxColliderHeight;
     [SerializeField] float rotationSpeed;
     [SerializeField] int scoreValue;
-    private void Start()
-    {
-        transform.position = new Vector3(transform.position.x, transform.position.y + boxColliderHeight, transform.position.z);
-    }
+
     private void Update()
     {
         if(GetComponent<BoxCollider>() == null)
@@ -27,11 +23,10 @@ public class Pickups : MonoBehaviour
 
     private void PickupBob()
     {
-        float yChange = Mathf.Sin(Time.timeSinceLevelLoad/period)*amplitude;
-
+        float yChange = Mathf.Sin(Time.timeSinceLevelLoad/period)/2;
         if (Mathf.Abs(yChange) >= Mathf.Epsilon)
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y+yChange, transform.localPosition.z);
+            transform.localPosition = new Vector3(transform.localPosition.x,yChange*boxColliderHeight+boxColliderHeight/2, transform.localPosition.z);
             gameObject.GetComponent<BoxCollider>().center = new Vector3(0, gameObject.GetComponent<BoxCollider>().center.x-yChange, 0);
         }
 
