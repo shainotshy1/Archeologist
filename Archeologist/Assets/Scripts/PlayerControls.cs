@@ -123,7 +123,7 @@ public class PlayerControls : MonoBehaviour
         canvas.enabled = true;
         rigidBody.velocity = Vector3.zero;
         rigidBody.useGravity = false;
-        rigidBody.gameObject.GetComponent<BoxCollider>().enabled = false;
+        rigidBody.gameObject.GetComponent<SphereCollider>().enabled = false;
     }
     void Update()
     {

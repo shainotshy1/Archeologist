@@ -13,6 +13,8 @@ public class PathHandler : MonoBehaviour
     [SerializeField] float scaleDistanceFactor;
     [SerializeField] float maxSpeed;
     [SerializeField] float acceleration;
+    [SerializeField] Transform playerBall;
+    [SerializeField] float ballRotationScaleFactor;
     [SerializeField] float platformAlignSpeed;
     [SerializeField] GameObject straightPath;
     [SerializeField] GameObject rightTurn;
@@ -87,6 +89,7 @@ public class PathHandler : MonoBehaviour
 
         if (!pathRunning) return;
         if(currentSpeed != 0) currentSpeed = movementSpeed;
+        playerBall.Rotate(movementSpeed * Time.deltaTime*ballRotationScaleFactor, 0,0);
         IncreaseDistance();
         TurnPlayer();
         CreatePath();
