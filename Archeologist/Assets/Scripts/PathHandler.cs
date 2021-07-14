@@ -10,6 +10,7 @@ public class PathHandler : MonoBehaviour
     public static bool pathRunning;
 
     [SerializeField] float movementSpeed;
+    [SerializeField] float scaleDistanceFactor;
     [SerializeField] float maxSpeed;
     [SerializeField] float acceleration;
     [SerializeField] float platformAlignSpeed;
@@ -37,7 +38,7 @@ public class PathHandler : MonoBehaviour
     float currentAngle;
     float currentSpeed;
     float _turnPlatformShift;
-    int distance = 0;
+    float distance = 0;
     int platformsSinceLastTurn = 0;
     bool directionSet;
     TurnType currentTurnType;
@@ -85,8 +86,8 @@ public class PathHandler : MonoBehaviour
         }
 
         if (!pathRunning) return;
-
         if(currentSpeed != 0) currentSpeed = movementSpeed;
+        IncreaseDistance();
         TurnPlayer();
         CreatePath();
         MovePaths();
@@ -104,7 +105,7 @@ public class PathHandler : MonoBehaviour
     }
     private void DisplayDistance()
     {
-        distanceBoard.text = $"Distance: {distance} m";
+        distanceBoard.text = $"Distance: {(int)distance} m";
     }
     private void TurnPlayer()
     {
@@ -154,7 +155,6 @@ public class PathHandler : MonoBehaviour
     private void RotatePlayer(float angle,float newPosVal)
     {
         playerTransform.RotateAround(new Vector3(playerPosition.x + newPosVal * currentDirection.z, 0, playerPosition.z - newPosVal * currentDirection.x), Vector3.up, angle);
-        IncreaseDistance();
     }
     private void PathAlignWithPlayer()
     {
@@ -176,11 +176,10 @@ public class PathHandler : MonoBehaviour
 
             if (!platforms[i].activeInHierarchy) platforms[i].SetActive(true);
         }
-        IncreaseDistance();
     }
     private void IncreaseDistance()
     {
-        distance += (int)(Time.deltaTime * movementSpeed);
+        distance +=Time.deltaTime * movementSpeed*scaleDistanceFactor;
     }
     private float PathPlayerDistance(int pathIndex)
     {

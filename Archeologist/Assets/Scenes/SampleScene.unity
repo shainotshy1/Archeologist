@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 50
+  scaleDistanceFactor: 0.1
   maxSpeed: 200
   acceleration: 1.5
   platformAlignSpeed: 10
