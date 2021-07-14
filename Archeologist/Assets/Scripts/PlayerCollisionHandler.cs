@@ -10,7 +10,7 @@ public class PlayerCollisionHandler : MonoBehaviour
     ScoreHandler scoreHandler;
     private void Start()
     {
-        scoreHandler = new ScoreHandler();
+        scoreHandler = new ScoreHandler(0);
     }
     private void OnCollisionStay(Collision collision)
     {
@@ -28,8 +28,7 @@ public class PlayerCollisionHandler : MonoBehaviour
         if (collision.gameObject.tag == "Obstacle")
         {
             PlayerControls playerControls = FindObjectOfType<PlayerControls>();
-            StartCoroutine(playerControls.ReloadScene());
-            scoreHandler.ResetScore();
+            StartCoroutine(playerControls.PlayerDeath());
         }
     }
     private void Update()

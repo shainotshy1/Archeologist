@@ -7,6 +7,7 @@ using TMPro;
 public class PathHandler : MonoBehaviour
 {
     public static float pathSeperatorDistance;
+    public static bool pathRunning;
 
     [SerializeField] float movementSpeed;
     [SerializeField] float maxSpeed;
@@ -44,6 +45,7 @@ public class PathHandler : MonoBehaviour
     TextMeshProUGUI distanceBoard;
     private void Start()
     {
+        pathRunning = true;
         _turnPlatformShift = 0f;
         directionSet = true;
         nextPlatformPositioning = Vector3.zero;
@@ -77,17 +79,19 @@ public class PathHandler : MonoBehaviour
     }
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
+        if (!pathRunning) return;
+
         if(currentSpeed != 0) currentSpeed = movementSpeed;
         TurnPlayer();
         CreatePath();
         MovePaths();
         PathAlignWithPlayer();
         DisplayDistance();
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Application.Quit();
-        }
 
         if (movementSpeed < maxSpeed)
         {

@@ -21,6 +21,12 @@ public class PlayerControls : MonoBehaviour
     Position setPosition;
     Transform bodyTransform;
     Rigidbody rigidBody;
+    Canvas canvas;
+    private void Awake()
+    {
+        canvas = GameObject.FindGameObjectWithTag("GameOver").GetComponent<Canvas>();
+        canvas.enabled = false;
+    }
     private void Start()
     {
         setPosition = Position.Middle;
@@ -110,18 +116,21 @@ public class PlayerControls : MonoBehaviour
         Vector3 endPosition = new Vector3(newX, bodyTransform.transform.localPosition.y, newZ);
         bodyTransform.transform.localPosition = Vector3.Lerp(bodyTransform.transform.localPosition, endPosition, Time.deltaTime * horizontalSpeed);
     }
-    public IEnumerator ReloadScene()
+    public IEnumerator PlayerDeath()
     {
         yield return new WaitForEndOfFrame();//temporary till end sequence is added
-        int index = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(index);
+        PathHandler.pathRunning = false;
+        canvas.enabled = true;
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.useGravity = false;
+        rigidBody.gameObject.GetComponent<BoxCollider>().enabled = false;
     }
     void Update()
     {
         isGrounded = rigidBody.GetComponent<PlayerCollisionHandler>().playerGrounded;
         if (transform.localPosition.y < -10)
         {
-            StartCoroutine(ReloadScene());
+            StartCoroutine(PlayerDeath());
         }
 
         ProcessInput();

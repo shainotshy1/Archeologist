@@ -12,6 +12,7 @@ TagManager:
   - Pickup
   - Score
   - Distance
+  - GameOver
   layers:
   - Default
   - TransparentFX

@@ -5,17 +5,20 @@ using UnityEngine;
 
 public class ScoreHandler
 {
-    static float score = 0;
+    static float score;
 
     TextMeshProUGUI scoreBoard = GameObject.FindGameObjectWithTag("Score").GetComponent<TextMeshProUGUI>();
+    public ScoreHandler(int _score)
+    {
+        score = _score;
+    }
+    public ScoreHandler()
+    {
+
+    }
     public void ChangeScore(int delta)
     {
         score += delta;
-    }
-    public void ResetScore()
-    {
-        Debug.Log($"Previous Score: {score}");
-        score = 0;
     }
     public void DisplayScore()
     {
