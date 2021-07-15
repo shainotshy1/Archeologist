@@ -16,7 +16,7 @@ public class PathHandler : MonoBehaviour
     [SerializeField] Transform playerBall;
     [SerializeField] float ballRotationScaleFactor;
     [SerializeField] float platformAlignSpeed;
-    [SerializeField] GameObject straightPath;
+    [SerializeField] List<GameObject> _straightPaths;
     [SerializeField] GameObject rightTurn;
     [SerializeField] GameObject leftTurn;
     [SerializeField] GameObject forkPath;
@@ -35,6 +35,7 @@ public class PathHandler : MonoBehaviour
     Vector3 playerPosition;
     Vector3 alignedPosition;
     List<GameObject> platforms = new List<GameObject>();
+    Queue<GameObject> straightPaths = new Queue<GameObject>();
     System.Random random = new System.Random();
     float targetAngle;
     float currentAngle;
@@ -62,7 +63,12 @@ public class PathHandler : MonoBehaviour
 
         distanceBoard = GameObject.FindGameObjectWithTag("Distance").GetComponent<TextMeshProUGUI>();
 
-        BoxCollider boxCollider = straightPath.GetComponent<BoxCollider>();
+        foreach(GameObject path in _straightPaths)
+        {
+            straightPaths.Enqueue(path);
+        }
+
+        BoxCollider boxCollider = straightPaths.Peek().GetComponent<BoxCollider>();
         if (boxCollider != null)
         {
             pathSeperatorDistance = boxCollider.size.z;
@@ -75,7 +81,9 @@ public class PathHandler : MonoBehaviour
         for (int i = -pathsInBackAmount; i <= pathsInfrontAmount; i++)
         {
             Vector3 newPosition = new Vector3(0, 0, pathSeperatorDistance*i);
-            GameObject addedPath = Instantiate(straightPath, newPosition, Quaternion.Euler(0, transform.eulerAngles.y,0), transform);
+            GameObject path = straightPaths.Dequeue();
+            straightPaths.Enqueue(path);
+            GameObject addedPath = Instantiate(path, newPosition, Quaternion.Euler(0, transform.eulerAngles.y,0), transform);
             addedPath.GetComponent<PlatformHandler>().turnType = TurnType.Straight;
             platforms.Add(addedPath);
         }
@@ -113,10 +121,26 @@ public class PathHandler : MonoBehaviour
     private void TurnPlayer()
     {
         currentTurnType = platforms[pathsInBackAmount].GetComponent<PlatformHandler>().turnType;
+
+        /*for(int i = pathsInBackAmount-1; i < platforms.Count; i++)
+        {
+            TurnType turnType = platforms[i].GetComponent<PlatformHandler>().turnType;
+            if (turnType != TurnType.Straight)
+            {
+                float distanceToTurn = PathPlayerDistance(i);
+                if (distanceToTurn <= 0 && currentSpeed != 0)
+                {
+                    currentTurnType = turnType;
+                    directionSet = false;
+                    currentSpeed = 0;
+                }
+                break;
+            }
+        }*/
         if (currentTurnType != TurnType.Straight && currentSpeed != 0)
         {
             float distance = PathPlayerDistance(pathsInBackAmount);
-            if (distance >= 0)
+            if (distance >= -pathSeperatorDistance / 2)
             {
                 directionSet = false;
                 currentSpeed = 0;
@@ -228,7 +252,8 @@ public class PathHandler : MonoBehaviour
             }*/
             else
             {
-                pathType = straightPath;
+                pathType = straightPaths.Dequeue();
+                straightPaths.Enqueue(pathType);
                 turnType = TurnType.Straight;
                 platformsSinceLastTurn++;
             }
@@ -311,6 +336,6 @@ public class PathHandler : MonoBehaviour
     {
         nextPlatformPositioning = currentDirection + nextDirection;
 
-        _turnPlatformShift = rotationRadius;
+        _turnPlatformShift = rotationRadius-pathSeperatorDistance/2;
     }
 }
