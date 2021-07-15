@@ -17,6 +17,7 @@ public class PlayerControls : MonoBehaviour
         Left, Middle, Right, Idle
     }
     bool isGrounded;
+    bool controlsEnabled;
     Vector3 movementDirection = new Vector3(1, 0, 0);
     Position setPosition;
     Transform bodyTransform;
@@ -30,6 +31,7 @@ public class PlayerControls : MonoBehaviour
     private void Start()
     {
         setPosition = Position.Middle;
+        controlsEnabled = true;
 
         foreach (Transform child in transform)
         {
@@ -54,7 +56,7 @@ public class PlayerControls : MonoBehaviour
     }
     private void ProcessInput()
     {
-
+        ResetPhysics();
         if ((Input.GetKey(KeyCode.Space)||GetComponent<Swipe>().SwipeUp) && isGrounded)
         {
             rigidBody.velocity = Vector3.up*jumpInitialVelocity;
@@ -124,10 +126,21 @@ public class PlayerControls : MonoBehaviour
         yield return new WaitForEndOfFrame();//temporary till end sequence is added
         PathHandler.pathRunning = false;
         canvas.enabled = true;
+        PausePhysics();
+    }
+
+    private void PausePhysics()
+    {
         rigidBody.velocity = Vector3.zero;
         rigidBody.useGravity = false;
         rigidBody.gameObject.GetComponent<SphereCollider>().enabled = false;
     }
+    private void ResetPhysics()
+    {
+        rigidBody.useGravity = true;
+        rigidBody.gameObject.GetComponent<SphereCollider>().enabled = true;
+    }
+
     void Update()
     {
         isGrounded = rigidBody.GetComponent<PlayerCollisionHandler>().playerGrounded;
@@ -135,7 +148,8 @@ public class PlayerControls : MonoBehaviour
         {
             StartCoroutine(PlayerDeath());
         }
-
-        ProcessInput();
+        controlsEnabled = PathHandler.pathRunning;
+        if (controlsEnabled) ProcessInput();
+        else PausePhysics();
     }
 }
