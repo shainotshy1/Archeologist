@@ -55,11 +55,14 @@ public class PlayerControls : MonoBehaviour
     private void ProcessInput()
     {
 
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        if ((Input.GetKey(KeyCode.Space)||GetComponent<Swipe>().SwipeUp) && isGrounded)
         {
             rigidBody.velocity = Vector3.up*jumpInitialVelocity;
         }
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        if((Input.GetKey(KeyCode.DownArrow)||Input.GetKey(KeyCode.LeftShift) || GetComponent<Swipe>().SwipeDown) && !isGrounded){
+            rigidBody.velocity = Vector3.down * jumpInitialVelocity;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || GetComponent<Swipe>().SwipeLeft)
         {
             if (setPosition == Position.Middle)
             {
@@ -70,7 +73,7 @@ public class PlayerControls : MonoBehaviour
                 setPosition = Position.Middle;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || GetComponent<Swipe>().SwipeRight)
         {
             if (setPosition == Position.Middle)
             {
