@@ -14,7 +14,6 @@ public class PathHandler : MonoBehaviour
     [SerializeField] float maxSpeed;
     [SerializeField] float acceleration;
     [SerializeField] Transform playerBall;
-    [SerializeField] float ballRotationScaleFactor;
     [SerializeField] float platformAlignSpeed;
     [SerializeField] List<GameObject> _straightPaths;
     [SerializeField] GameObject rightTurn;
@@ -97,7 +96,8 @@ public class PathHandler : MonoBehaviour
 
         if (!pathRunning) return;
         if(currentSpeed != 0) currentSpeed = movementSpeed;
-        playerBall.Rotate(movementSpeed * Time.deltaTime*ballRotationScaleFactor, 0,0);
+        float diameter = playerBall.localScale.x;
+        playerBall.Rotate(Time.deltaTime * movementSpeed * 180 / (Mathf.PI * diameter), 0,0);
         IncreaseDistance();
         TurnPlayer();
         CreatePath();
@@ -158,7 +158,7 @@ public class PathHandler : MonoBehaviour
             }
             if ((currentTurnType == TurnType.Left && currentAngle > targetAngle)|| (currentTurnType == TurnType.Right && currentAngle < targetAngle))
             {
-                float angleChange = Time.deltaTime * movementSpeed*180/(Mathf.PI*rotationRadius)*(targetAngle-currentAngle)/Mathf.Abs(targetAngle-currentAngle);
+                float angleChange = Time.deltaTime * movementSpeed * 180 / (Mathf.PI* rotationRadius) *(targetAngle-currentAngle)/Mathf.Abs(targetAngle-currentAngle);
                 currentAngle += angleChange;
                 RotatePlayer(angleChange, newPosVal);
                 
